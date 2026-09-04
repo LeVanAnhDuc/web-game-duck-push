@@ -1,4 +1,4 @@
-# Tài liệu dự án `web-game/web-game-sokoban`
+# Tài liệu dự án `web-game-sokoban`
 
 ## Bản đồ
 

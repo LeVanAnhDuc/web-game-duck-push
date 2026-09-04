@@ -8,7 +8,11 @@
 <!-- BEGIN:auto — bảng dưới do .claude/scripts/docs-regen.sh sinh từ các file ADR. Đừng sửa tay. -->
 | ID | Tiêu đề | Ngày | Trạng thái |
 | --- | --- | --- | --- |
-| — | _chưa có ADR nào_ | — | — |
+| [ADR-0001](0001-design-tokens.md) | Bỏ hướng Pixel Art, dùng bảng màu thùng gỗ + Space Grotesk / IBM Plex Mono | 2026-09-04 | accepted |
+| [ADR-0002](0002-static-export-and-dom-board.md) | Xuất HTML tĩnh bằng Next.js và vẽ bàn cờ bằng DOM, không dùng canvas | 2026-09-04 | accepted |
+| [ADR-0003](0003-hybrid-level-generation.md) | Sinh màn kiểu lai: ghép phòng mẫu, đặt thùng bằng đi lùi, chấm bằng solver có ngân sách | 2026-09-04 | accepted |
+| [ADR-0004](0004-push-space-astar-solver.md) | Solver A\* trên không gian đẩy, chuẩn hoá theo vùng người chơi | 2026-09-04 | accepted |
+| [ADR-0005](0005-local-storage-only.md) | Lưu toàn bộ tiến độ trong `localStorage`, có `version`, hỏng thì bỏ | 2026-09-04 | accepted |
 <!-- END:auto -->
 
 Trạng thái: `accepted` · `superseded by ADR-00xx` · `deprecated`

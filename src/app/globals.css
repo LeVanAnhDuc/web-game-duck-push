@@ -1,0 +1,190 @@
+@import "tailwindcss";
+
+/*
+ * Token thiết kế — nguồn đúng là docs/design-system/sokoban/MASTER.md.
+ * Mọi giá trị ở đây đã được đo tương phản; đổi một giá trị thì đo lại rồi cập nhật
+ * bảng "Measured contrast" trong MASTER.md. Không thêm màu mới ngoài bảng này.
+ */
+
+@theme {
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+}
+
+:root {
+  color-scheme: light dark;
+
+  --color-background: #f5f1ea;
+  --color-foreground: #1c1917;
+  --color-card: #ffffff;
+  --color-card-foreground: #1c1917;
+  --color-muted-foreground: #57534e;
+  --color-border: #e0d9cc;
+  --color-primary: #b45309;
+  --color-on-primary: #ffffff;
+  --color-accent: #0f766e;
+  --color-on-accent: #ffffff;
+  --color-destructive: #b91c1c;
+  --color-on-destructive: #ffffff;
+  --color-ring: #0f766e;
+
+  --board-floor: #ede7dc;
+  --board-line: #ddd5c7;
+  --board-wall: #44403c;
+  --board-goal: #0f766e;
+  --board-crate: #b45309;
+  --board-crate-edge: #78350f;
+  --board-crate-done: #0f766e;
+  --board-crate-done-edge: #134e4a;
+  --board-player: #312e81;
+
+  --shadow-sm: 0 1px 2px rgba(28, 25, 23, 0.06);
+  --shadow-md: 0 4px 6px rgba(28, 25, 23, 0.1);
+  --shadow-lg: 0 10px 15px rgba(28, 25, 23, 0.12);
+
+  --motion-step: 120ms;
+  --motion-ui: 150ms;
+  --ease-step: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: #1c1917;
+    --color-foreground: #fafaf9;
+    --color-card: #292524;
+    --color-card-foreground: #fafaf9;
+    --color-muted-foreground: #a8a29e;
+    --color-border: #44403c;
+    --color-primary: #f59e0b;
+    --color-on-primary: #1c1917;
+    --color-accent: #2dd4bf;
+    --color-on-accent: #1c1917;
+    --color-destructive: #f87171;
+    --color-on-destructive: #1c1917;
+    --color-ring: #2dd4bf;
+
+    --board-floor: #6b645c;
+    --board-line: #5a544d;
+    --board-wall: #0c0a09;
+    --board-goal: #5eead4;
+    --board-crate: #fbbf24;
+    --board-crate-edge: #92400e;
+    --board-crate-done: #99f6e4;
+    --board-crate-done-edge: #0f766e;
+    --board-player: #c7d2fe;
+  }
+}
+
+/* Người chơi ép sáng/tối bằng nút trong game — thắng cả hai chiều. */
+:root[data-theme="light"] {
+  --color-background: #f5f1ea;
+  --color-foreground: #1c1917;
+  --color-card: #ffffff;
+  --color-card-foreground: #1c1917;
+  --color-muted-foreground: #57534e;
+  --color-border: #e0d9cc;
+  --color-primary: #b45309;
+  --color-on-primary: #ffffff;
+  --color-accent: #0f766e;
+  --color-on-accent: #ffffff;
+  --color-destructive: #b91c1c;
+  --color-on-destructive: #ffffff;
+  --color-ring: #0f766e;
+  --board-floor: #ede7dc;
+  --board-line: #ddd5c7;
+  --board-wall: #44403c;
+  --board-goal: #0f766e;
+  --board-crate: #b45309;
+  --board-crate-edge: #78350f;
+  --board-crate-done: #0f766e;
+  --board-crate-done-edge: #134e4a;
+  --board-player: #312e81;
+}
+
+:root[data-theme="dark"] {
+  --color-background: #1c1917;
+  --color-foreground: #fafaf9;
+  --color-card: #292524;
+  --color-card-foreground: #fafaf9;
+  --color-muted-foreground: #a8a29e;
+  --color-border: #44403c;
+  --color-primary: #f59e0b;
+  --color-on-primary: #1c1917;
+  --color-accent: #2dd4bf;
+  --color-on-accent: #1c1917;
+  --color-destructive: #f87171;
+  --color-on-destructive: #1c1917;
+  --color-ring: #2dd4bf;
+  --board-floor: #6b645c;
+  --board-line: #5a544d;
+  --board-wall: #0c0a09;
+  --board-goal: #5eead4;
+  --board-crate: #fbbf24;
+  --board-crate-edge: #92400e;
+  --board-crate-done: #99f6e4;
+  --board-crate-done-edge: #0f766e;
+  --board-player: #c7d2fe;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-display);
+  font-weight: 500;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted-foreground);
+}
+
+/*
+ * NFR-A11Y-05 — mọi chuyển động biến mất hoàn toàn, không chỉ rút ngắn.
+ * Trạng thái vẫn đọc được vì không có gì chỉ được truyền đạt bằng chuyển động.
+ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-step: 0ms;
+    --motion-ui: 0ms;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

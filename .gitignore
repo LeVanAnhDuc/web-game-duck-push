@@ -4,3 +4,14 @@
 .env
 .env.*
 !.env.example
+
+# Node / Next
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+
+# Test
+test-results/
+playwright-report/

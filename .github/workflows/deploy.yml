@@ -1,0 +1,61 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn typecheck
+      - run: yarn lint
+
+      # The pack suite re-runs the solver over every committed level and checks
+      # the recorded optimal push count. That is the only thing standing between
+      # a stale pack and a HUD showing a target nobody can reach.
+      - run: yarn test
+
+      # Nothing in the unit suite touches the DOM, so the browser suite is what
+      # actually stops a broken interface from shipping.
+      - run: yarn playwright install --with-deps chromium
+      - run: yarn test:e2e
+
+      - run: yarn build
+        env:
+          GITHUB_PAGES: "true"
+
+      # Next puts every asset under _next/, and anything starting with an
+      # underscore is invisible to Jekyll.
+      - run: touch out/.nojekyll
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

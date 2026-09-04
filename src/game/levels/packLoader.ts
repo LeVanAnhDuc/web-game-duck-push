@@ -68,8 +68,8 @@ export async function loadPack(difficulty: Difficulty): Promise<LevelPack> {
 
   let raw: unknown;
   try {
-    const module = await loaders[difficulty]();
-    raw = module.default;
+    const loaded = await loaders[difficulty]();
+    raw = loaded.default;
   } catch (error) {
     throw new PackLoadError(`Không tải được pack ${difficulty}`, error);
   }

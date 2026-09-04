@@ -32,7 +32,7 @@ function getStorage(): Storage | null {
  * `localStorage` không dùng được. Người gọi tự kiểm hình dạng dữ liệu — ở đây
  * chỉ bảo đảm "không nổ".
  */
-export function readJson<T>(key: string): unknown | null {
+export function readJson(key: string): unknown {
   const storage = getStorage();
   if (storage === null) return null;
   try {

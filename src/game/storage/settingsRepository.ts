@@ -30,7 +30,7 @@ function isSettings(value: unknown): value is Settings {
 }
 
 export function loadSettings(): Settings {
-  const raw = readJson<Settings>(STORAGE_KEYS.settings);
+  const raw = readJson(STORAGE_KEYS.settings);
   if (!isSettings(raw)) return DEFAULT_SETTINGS;
   return raw;
 }

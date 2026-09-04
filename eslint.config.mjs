@@ -1,8 +1,12 @@
-import { FlatCompat } from "@eslint/eslintrc";
+import coreWebVitals from "eslint-config-next/core-web-vitals";
+import typescript from "eslint-config-next/typescript";
 
-const compat = new FlatCompat({ baseDirectory: import.meta.dirname });
-
+/*
+ * eslint-config-next 16 đã xuất thẳng mảng flat config, nên bọc qua FlatCompat
+ * làm ESLint nổ "Converting circular structure to JSON" trước khi đọc file nào.
+ */
 export default [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  ...coreWebVitals,
+  ...typescript,
   { ignores: [".next/**", "out/**", "node_modules/**", "public/**"] }
 ];

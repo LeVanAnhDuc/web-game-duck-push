@@ -66,7 +66,7 @@ function isProgress(value: unknown): value is Progress {
 }
 
 export function loadProgress(): Progress {
-  const raw = readJson<Progress>(STORAGE_KEYS.progress);
+  const raw = readJson(STORAGE_KEYS.progress);
   if (!isProgress(raw)) return EMPTY_PROGRESS;
   return raw;
 }

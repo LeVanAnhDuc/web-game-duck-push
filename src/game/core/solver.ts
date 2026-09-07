@@ -1,5 +1,5 @@
 import { computeDeadSquares, isDeadlocked } from "./deadlock";
-import { findPath, isGoal, isSolved, isWall, neighbor, reachableCells, step } from "./rules";
+import { findPath, isGoal, isSolved, isWall, neighbor, step } from "./rules";
 import {
   DIRECTIONS,
   type Board,
@@ -130,22 +130,120 @@ function buildGoalDistance(board: Board): number[] {
   return table;
 }
 
-function heuristic(boxes: readonly CellIndex[], goalDistance: readonly number[]): number {
+function heuristic(boxes: readonly CellIndex[], goalDistance: ArrayLike<number>): number {
   let sum = 0;
   for (const box of boxes) sum += goalDistance[box] ?? 0;
   return sum;
 }
 
-/** Ô nhỏ nhất của vùng — dạng chuẩn hoá của "người chơi đang đứng đâu đó trong vùng này". */
-function regionRepresentative(region: ReadonlySet<CellIndex>): CellIndex {
-  let min = Number.POSITIVE_INFINITY;
-  for (const cell of region) if (cell < min) min = cell;
-  return min;
+/**
+ * Bảng tra của một bàn cờ, tính một lần rồi dùng lại cho mọi lượt tìm trên bàn đó.
+ *
+ * Vòng trong của solver chạy hàng triệu lần, và `neighbor()` của luật chơi làm một
+ * phép chia và một phép chia lấy dư mỗi lần gọi. Đổi sang tra bảng là chỗ rẻ tiền
+ * nhất để lấy lại tốc độ, mà luật chơi vẫn là nguồn đúng duy nhất — bảng này chỉ
+ * là ảnh chụp của nó.
+ */
+interface BoardIndex {
+  readonly cellCount: number;
+  /** `neighbors[(cell << 2) + d]` — ô kề theo hướng `DIRECTIONS[d]`, `-1` nếu ra ngoài. */
+  readonly neighbors: Int32Array;
+  readonly wall: Uint8Array;
+  readonly goal: Uint8Array;
+  readonly goalDistance: Int32Array;
 }
 
-/** Khoá ngắn nhất có thể: chuỗi băm nhanh hơn mọi thứ tự sánh mảng trong `Map`. */
+const boardIndexes = new WeakMap<Board, BoardIndex>();
+
+function indexBoard(board: Board): BoardIndex {
+  const cached = boardIndexes.get(board);
+  if (cached) return cached;
+
+  const cellCount = board.cells.length;
+  const neighbors = new Int32Array(cellCount * 4).fill(-1);
+  const wall = new Uint8Array(cellCount);
+  const goal = new Uint8Array(cellCount);
+
+  for (let cell = 0; cell < cellCount; cell += 1) {
+    if (isWall(board, cell)) wall[cell] = 1;
+    if (isGoal(board, cell)) goal[cell] = 1;
+    for (let d = 0; d < DIRECTIONS.length; d += 1) {
+      const next = neighbor(board, cell, DIRECTIONS[d]!);
+      neighbors[(cell << 2) + d] = next === null ? -1 : next;
+    }
+  }
+
+  const distances = buildGoalDistance(board);
+  const goalDistance = Int32Array.from(distances);
+
+  const index: BoardIndex = { cellCount, neighbors, wall, goal, goalDistance };
+  boardIndexes.set(board, index);
+  return index;
+}
+
+/**
+ * Quét vùng người chơi đi lại được, **không cấp phát gì**.
+ *
+ * Bản cũ gọi `reachableCells` một lần cho mỗi nút *và* một lần cho mỗi nút con, mỗi
+ * lần dựng một `Set` mới — với hàng trăm nghìn nút thì phần lớn thời gian solver
+ * nằm ở bộ dọn rác. Ở đây mảng `visited` được dùng lại và phân biệt các lượt quét
+ * bằng số hiệu tăng dần, nên không có object nào ra đời trong vòng trong.
+ */
+class RegionScanner {
+  private readonly visited: Int32Array;
+  private readonly queue: Int32Array;
+  private stamp = 0;
+
+  constructor(cellCount: number) {
+    this.visited = new Int32Array(cellCount);
+    this.queue = new Int32Array(cellCount);
+  }
+
+  /** Quét từ `start`, trả về ô nhỏ nhất của vùng — dạng chuẩn hoá của vị trí người chơi. */
+  scan(index: BoardIndex, occupied: Uint8Array, start: CellIndex): CellIndex {
+    this.stamp += 1;
+    const { visited, queue, stamp } = this;
+    const { neighbors, wall } = index;
+
+    visited[start] = stamp;
+    queue[0] = start;
+    let head = 0;
+    let tail = 1;
+    let min = start;
+
+    while (head < tail) {
+      const cell = queue[head]!;
+      head += 1;
+      const base = cell << 2;
+      for (let d = 0; d < 4; d += 1) {
+        const next = neighbors[base + d]!;
+        if (next < 0 || visited[next] === stamp) continue;
+        if (wall[next] === 1 || occupied[next] === 1) continue;
+        visited[next] = stamp;
+        queue[tail] = next;
+        tail += 1;
+        if (next < min) min = next;
+      }
+    }
+    return min;
+  }
+
+  /** Ô này có nằm trong vùng vừa quét không. */
+  contains(cell: CellIndex): boolean {
+    return this.visited[cell] === this.stamp;
+  }
+}
+
+/**
+ * Khoá trạng thái.
+ *
+ * Mỗi ô là một mã ký tự, nên bàn 12×12 gói gọn trong 6-7 ký tự. Nối chuỗi bằng
+ * `join(",")` tạo ra khoá dài gấp ba và tốn một mảng trung gian mỗi lần gọi.
+ */
 function makeKey(boxes: readonly CellIndex[], player: CellIndex): string {
-  return `${boxes.join(",")}|${player}`;
+  let key = String.fromCharCode(player);
+  for (let i = 0; i < boxes.length; i += 1) key += String.fromCharCode(boxes[i]!);
+  return key;
 }
 
 /** Thay một thùng mà vẫn giữ mảng sắp tăng dần — bất biến của `LevelState.boxes`. */
@@ -154,15 +252,29 @@ function replaceBoxSorted(
   from: CellIndex,
   to: CellIndex
 ): CellIndex[] {
-  const next = boxes.filter((box) => box !== from);
-  let i = 0;
-  while (i < next.length && (next[i] ?? 0) < to) i += 1;
-  next.splice(i, 0, to);
+  const size = boxes.length;
+  const next = new Array<CellIndex>(size);
+  let write = 0;
+  let inserted = false;
+
+  for (let i = 0; i < size; i += 1) {
+    const box = boxes[i]!;
+    if (box === from) continue;
+    if (!inserted && to < box) {
+      next[write] = to;
+      write += 1;
+      inserted = true;
+    }
+    next[write] = box;
+    write += 1;
+  }
+  if (!inserted) next[write] = to;
   return next;
 }
 
-function allBoxesOnGoal(board: Board, boxes: readonly CellIndex[]): boolean {
-  return boxes.every((box) => isGoal(board, box));
+function allBoxesOnGoal(index: BoardIndex, boxes: readonly CellIndex[]): boolean {
+  for (let i = 0; i < boxes.length; i += 1) if (index.goal[boxes[i]!] !== 1) return false;
+  return true;
 }
 
 interface PushEdge {
@@ -228,9 +340,22 @@ export function solve(state: LevelState, budget: SolverBudget): SolveResult {
   const deadSquares = computeDeadSquares(board);
   if (isDeadlocked(state, deadSquares)) return { status: "unsolvable", nodes: 0 };
 
-  const goalDistance = buildGoalDistance(board);
+  const index = indexBoard(board);
+  const goalDistance = index.goalDistance;
+  const dead = new Uint8Array(index.cellCount);
+  for (const cell of deadSquares) dead[cell] = 1;
+
+  // Ô nào đang có thùng. Được sửa tại chỗ trong vòng trong rồi trả về nguyên trạng.
+  const occupied = new Uint8Array(index.cellCount);
+  // Hai bộ quét tách biệt: nút con quét đè lên dấu của nút cha thì mất luôn phép
+  // thử "người chơi có tới được ô đứng đẩy không" cho các hướng còn lại.
+  const nodeScanner = new RegionScanner(index.cellCount);
+  const childScanner = new RegionScanner(index.cellCount);
+
   const startBoxes = state.boxes.slice().sort((a, b) => a - b);
-  const startPlayer = regionRepresentative(reachableCells(state));
+  for (const box of startBoxes) occupied[box] = 1;
+  const startPlayer = nodeScanner.scan(index, occupied, state.player);
+  for (const box of startBoxes) occupied[box] = 0;
   const startKey = makeKey(startBoxes, startPlayer);
 
   const gScore = new Map<string, number>([[startKey, 0]]);
@@ -254,7 +379,7 @@ export function solve(state: LevelState, budget: SolverBudget): SolveResult {
     const best = gScore.get(node.key);
     if (best !== undefined && node.g > best) continue;
 
-    if (allBoxesOnGoal(board, node.boxes)) {
+    if (allBoxesOnGoal(index, node.boxes)) {
       const chain: PushEdge[] = [];
       let key = node.key;
       for (;;) {
@@ -285,32 +410,39 @@ export function solve(state: LevelState, budget: SolverBudget): SolveResult {
       return { status: "timeout", nodes };
     }
 
-    const boxSet = new Set(node.boxes);
-    const reachable = reachableCells({ board, player: node.player, boxes: node.boxes });
+    for (const box of node.boxes) occupied[box] = 1;
+    nodeScanner.scan(index, occupied, node.player);
 
     for (const box of node.boxes) {
-      for (const direction of DIRECTIONS) {
-        const destination = neighbor(board, box, direction);
-        if (destination === null || isWall(board, destination)) continue;
-        if (boxSet.has(destination) || deadSquares.has(destination)) continue;
+      const base = box << 2;
+      for (let d = 0; d < 4; d += 1) {
+        const destination = index.neighbors[base + d]!;
+        if (destination < 0 || index.wall[destination] === 1) continue;
+        if (occupied[destination] === 1 || dead[destination] === 1) continue;
 
-        const standOn = neighbor(board, box, OPPOSITE[direction]);
-        if (standOn === null || isWall(board, standOn) || boxSet.has(standOn)) continue;
-        if (!reachable.has(standOn)) continue;
+        // `d ^ 1` là hướng ngược lại: DIRECTIONS xếp thành cặp up/down, left/right.
+        const standOn = index.neighbors[base + (d ^ 1)]!;
+        if (standOn < 0 || index.wall[standOn] === 1 || occupied[standOn] === 1) continue;
+        if (!nodeScanner.contains(standOn)) continue;
 
         const nextBoxes = replaceBoxSorted(node.boxes, box, destination);
         // Sau cú đẩy người chơi đứng đúng ô thùng vừa rời đi.
         const nextState: LevelState = { board, player: box, boxes: nextBoxes };
         if (isDeadlocked(nextState, deadSquares)) continue;
 
-        const nextPlayer = regionRepresentative(reachableCells(nextState));
+        occupied[box] = 0;
+        occupied[destination] = 1;
+        const nextPlayer = childScanner.scan(index, occupied, box);
+        occupied[box] = 1;
+        occupied[destination] = 0;
+
         const nextKey = makeKey(nextBoxes, nextPlayer);
         const g = node.g + 1;
         const known = gScore.get(nextKey);
         if (known !== undefined && known <= g) continue;
 
         gScore.set(nextKey, g);
-        cameFrom.set(nextKey, { parent: node.key, box, direction });
+        cameFrom.set(nextKey, { parent: node.key, box, direction: DIRECTIONS[d]! });
         open.push({
           key: nextKey,
           boxes: nextBoxes,
@@ -320,6 +452,8 @@ export function solve(state: LevelState, budget: SolverBudget): SolveResult {
         });
       }
     }
+
+    for (const box of node.boxes) occupied[box] = 0;
   }
 
   // Hàng đợi cạn mà chưa chạm trần nào ⇒ đã duyệt hết không gian, kết luận chắc chắn.

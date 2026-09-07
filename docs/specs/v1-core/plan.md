@@ -67,4 +67,4 @@ sửa cho Yarn + Next static export — ADR-0006.
 ## 8. Đóng
 
 - [x] 8.1 Cập nhật `scope.md` (FR chuyển `xong`), `backlog.md`
-- [ ] 8.2 Commit theo Conventional Commits, mở PR
+- [x] 8.2 Commit theo Conventional Commits, mở PR

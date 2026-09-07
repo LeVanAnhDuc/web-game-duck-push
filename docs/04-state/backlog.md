@@ -7,19 +7,21 @@
 
 ## Đang làm
 
-**v1-core** trên nhánh `feat/v1-core` — xem `docs/specs/v1-core/plan.md`. Mọi mục đã xong
-trừ 8.1/8.2 (đóng nhánh) và một việc đang chạy: **sinh lại pack bậc `expert`** sau khi tắt
-hạ chuẩn ở script build (`allowRelax: false`). Bản pack cũ có 4/10 màn tụt xuống dưới sàn 36
-đẩy mà chính bậc đó khai báo, nên `src/game/levels/pack.test.ts` sẽ đỏ cho tới khi pack mới
-được ghi. Ba bậc còn lại đã đúng khuôn: easy 6-13, medium 14-23, hard 22-35 đẩy.
+**v1-core** trên nhánh `feat/v1-core` — xong toàn bộ `docs/specs/v1-core/plan.md`, chỉ còn
+mở pull request. 131 unit test và 12 e2e xanh; 65 màn trong pack đều giải lại đúng số đẩy
+tối ưu; bốn bậc tách bạch ở 6-13 · 14-23 · 22-35 · 37-45 đẩy.
+
+Một việc phải làm bằng tay trên GitHub sau khi merge, không có gì trong repo nhắc được:
+**bật GitHub Pages** (`gh api -X POST repos/LeVanAnhDuc/web-game-sokoban/pages -f
+build_type=workflow`) và **bật Dependabot alerts + security updates**. Thiếu cái thứ hai
+thì nửa sau của cổng bảo mật trong `ci.yml` không tồn tại.
 
 ## Việc tiếp theo
 
 | Việc | Liên quan | Ưu tiên | Vì sao ưu tiên đó |
 | --- | --- | --- | --- |
-| Sinh và commit pack màn chiến dịch | FR-06 | cao | Không có pack thì trang chủ trống, và không kiểm được bất biến #17 |
-| Test đối chiếu `optimalPushes` trên toàn pack | bất biến #17 | cao | Đây là thứ duy nhất chặn một pack cũ với số liệu sai |
-| E2E bằng bàn phím và ảnh chụp 4 bề rộng | NFR-A11Y-02 | cao | "Một thay đổi UI chưa nhìn tận mắt là chưa xong" |
+| Sửa cổng audit xanh giả ở 4 game anh em | — | cao | `web-game/*` đang chạy `check-audit.mjs` exit 0 khi audit không chạy. Bản sửa đã có ở solitaire và ở đây; chỉ còn port sang tetris/gomoku/minesweeper/flappy-bird |
+| Nhiều màn hơn cho bậc Rất khó | FR-06 | vừa | 10 màn là ít. Mỗi màn tốn ~50 giây sinh, nên đây là việc chạy nền một lần rồi commit |
 | Gợi ý nước đi | FR-13 (bỏ) | thấp | Cần solver chạy được từ trạng thái giữa ván với ngân sách chặt — bài toán khác hẳn, để sau v1 |
 | Âm thanh | — | thấp | Non-Goal của v1 |
 
@@ -30,3 +32,4 @@ hạ chuẩn ở script build (`allowRelax: false`). Bản pack cũ có 4/10 mà
 | Quy trình, không phải code | **Bỏ bước mockup canvas** (`feature-flow` 1.2: artboard 375/768/1440). Chỉ có wireframe ASCII đã duyệt | Người dùng yêu cầu chạy thẳng không hỏi lại, mà cổng duyệt mockup theo định nghĩa cần người duyệt | Trước feature UI tiếp theo — hoặc chạy `design` skill, hoặc ghi ADR bỏ hẳn bước đó |
 | `../web-game-sokoban.worktrees/` | Worktree đặt **ngoài** repo thay vì `<repo>/.worktrees/` như quy ước workspace | Đặt trong repo thì phải thêm một dòng `.gitignore` bằng một commit trên `main`, mà `main` là nhánh cấm commit | Khi có commit hợp lệ đầu tiên chạm `.gitignore` trên một nhánh feature |
 | `vitest.config.ts` | Vite cảnh báo config dùng cú pháp ESM trong file nạp kiểu CommonJS | Chỉ là cảnh báo; sửa bằng `"type": "module"` sẽ kéo theo `next.config.ts` và `postcss.config.mjs` | Khi nâng Vite lên bản đặt `configLoader: "native"` làm mặc định |
+| `src/game/levels/pack.test.ts` | Bộ kiểm pack mất ~2 phút, phần lớn ở bậc `expert` | Nó là thứ duy nhất chặn một pack có số liệu sai (bất biến #17); cắt nó đi là mất luôn cổng đó | Khi CI chậm tới mức cản việc, chia bậc `expert` sang một job riêng thay vì giảm phạm vi kiểm |

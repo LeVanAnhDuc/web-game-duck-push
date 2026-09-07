@@ -59,12 +59,12 @@ pull request) và `release.yml` + hai script phát hành, chép từ `web-game-t
 sửa cho Yarn + Next static export — ADR-0006.
 
 - [x] 7.1 `yarn tsc --noEmit`, `yarn lint`, `yarn build` sạch
-- [ ] 7.2 E2E: thắng một màn chỉ bằng bàn phím; undo; kỷ lục sống qua reload; bàn không cuộn
-- [ ] 7.3 Chụp màn hình 375 / 768 / 1024 / 1440, sáng và tối
+- [x] 7.2 E2E: thắng một màn chỉ bằng bàn phím; undo; kỷ lục sống qua reload; bàn không cuộn
+- [x] 7.3 Chụp màn hình 375 / 768 / 1024 / 1440, sáng và tối
 - [x] 7.4 Workflow GitHub Pages
 - [x] 7.5 README `## Features`
 
 ## 8. Đóng
 
-- [ ] 8.1 Cập nhật `scope.md` (FR chuyển `xong`), `backlog.md`
+- [x] 8.1 Cập nhật `scope.md` (FR chuyển `xong`), `backlog.md`
 - [ ] 8.2 Commit theo Conventional Commits, mở PR

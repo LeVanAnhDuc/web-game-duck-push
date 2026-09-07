@@ -13,6 +13,7 @@
 | [ADR-0003](0003-hybrid-level-generation.md) | Sinh màn kiểu lai: ghép phòng mẫu, đặt thùng bằng đi lùi, chấm bằng solver có ngân sách | 2026-09-04 | accepted |
 | [ADR-0004](0004-push-space-astar-solver.md) | Solver A\* trên không gian đẩy, chuẩn hoá theo vùng người chơi | 2026-09-04 | accepted |
 | [ADR-0005](0005-local-storage-only.md) | Lưu toàn bộ tiến độ trong `localStorage`, có `version`, hỏng thì bỏ | 2026-09-04 | accepted |
+| [ADR-0006](0006-release-and-ci-pipeline.md) | Phát hành tự động từ chính commit subject, CI tách ba job | 2026-09-04 | accepted |
 <!-- END:auto -->
 
 Trạng thái: `accepted` · `superseded by ADR-00xx` · `deprecated`

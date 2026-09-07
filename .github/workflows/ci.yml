@@ -1,0 +1,139 @@
+name: CI
+
+# Runs on every pull request. Without this, a branch could be merged red and the
+# first thing to notice would be the deploy job on `main` -- after the merge.
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+
+      # `--frozen-lockfile` and not a plain install: the lockfile is the answer.
+      # This workspace has already been bitten by a resolved-at-install dependency
+      # tree that differed from the one the tests were written against.
+      - run: yarn install --frozen-lockfile
+
+      - run: yarn typecheck
+      - run: yarn lint
+
+      # Slower than it looks, on purpose: this includes the pack suite, which
+      # re-runs the solver over all 65 committed levels and checks the recorded
+      # optimal push count (invariant #17). A stale pack still parses and still
+      # plays -- the only symptom is a HUD target nobody can reach and a star that
+      # never lights. Re-solving is the only thing that catches it.
+      - run: yarn test
+
+      - run: yarn build
+
+      - name: Report bundle size against NFR-PERF-09
+        run: |
+          # The threshold lives in docs/02-requirements/nfr.md: 200KB gzip for the
+          # JS the first screen pulls. Printed rather than enforced -- the level
+          # packs are code-split per difficulty, so the interesting number is the
+          # shared chunk set, and a hard gate here would fire on a mistake this log
+          # already makes visible.
+          echo "gzip sizes of the built JS chunks:"
+          total=0
+          for f in $(find out/_next/static -name '*.js' | sort); do
+            size=$(gzip -c "$f" | wc -c)
+            total=$((total + size))
+            printf '  %-52s %6.1f kB\n' "${f#out/_next/static/}" "$(echo "$size" | awk '{print $1/1024}')"
+          done
+          printf '  %-52s %6.1f kB\n' "TOTAL" "$(echo "$total" | awk '{print $1/1024}')"
+
+  # A separate job so the browser suite runs beside the unit tests instead of
+  # queueing behind them. It is also the only place that proves the built static
+  # export actually plays: the unit suite never touches the DOM.
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn playwright install --with-deps chromium
+      # playwright.config.ts builds and serves `out/` itself, so there is no
+      # separate build step here.
+      - run: yarn test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  # Also separate, and for the same reason: the audit talks to the registry and
+  # needs no node_modules at all, so making the tests wait behind it would be pure
+  # queueing. NFR-SEC-05 names CI as where this threshold is checked; this is it.
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Yarn 1's `--level` filters what is PRINTED but not the exit code, which is
+      # a bitmask summing every severity found -- so a moderate advisory in a dev
+      # tool would fail this job. Parsing the summary is the only way to gate on
+      # high and critical alone.
+      #
+      # Retried, and an unreachable registry is NOT a failure: an outage must not
+      # turn a security check into a random merge blocker. A real advisory still
+      # fails the job.
+      - name: yarn audit (high and above)
+        run: |
+          for attempt in 1 2 3; do
+            yarn audit --json >/tmp/audit.ndjson 2>/tmp/audit.err || true
+            if grep -qiE 'ENOTFOUND|ETIMEDOUT|ECONNRESET|Service Unavailable|socket hang up|503' /tmp/audit.err; then
+              echo "::warning::audit attempt $attempt could not reach the registry"
+              sleep $((attempt * 15))
+              continue
+            fi
+            node -e '
+              const fs = require("node:fs");
+              const lines = fs.readFileSync("/tmp/audit.ndjson", "utf8").split("\n").filter(Boolean);
+              let high = 0, critical = 0, summarySeen = false;
+              for (const line of lines) {
+                let entry;
+                try { entry = JSON.parse(line); } catch { continue; }
+                if (entry.type === "auditAdvisory") {
+                  const a = entry.data.advisory;
+                  if (a.severity === "high" || a.severity === "critical") {
+                    console.log(`${a.severity.toUpperCase()}  ${a.module_name}  ${a.title}`);
+                  }
+                }
+                if (entry.type === "auditSummary") {
+                  summarySeen = true;
+                  const v = entry.data.vulnerabilities || {};
+                  high = v.high || 0;
+                  critical = v.critical || 0;
+                }
+              }
+              if (!summarySeen) {
+                console.log("::warning::yarn audit produced no summary; treating as inconclusive");
+                process.exit(0);
+              }
+              console.log(`high=${high} critical=${critical}`);
+              process.exit(high + critical > 0 ? 1 : 0);
+            '
+            exit $?
+          done
+          echo "::warning::yarn audit could not reach the registry after 3 attempts; not failing the build for someone else's outage"

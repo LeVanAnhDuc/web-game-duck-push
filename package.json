@@ -33,6 +33,7 @@
     "happy-dom": "^20.13.2",
     "postcss": "^8.4.47",
     "prettier": "^3.3.3",
+    "serve": "^14.2.4",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.19.2",
     "typescript": "^5.9.0",

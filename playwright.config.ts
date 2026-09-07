@@ -11,7 +11,7 @@ export default defineConfig({
     { name: "mobile", use: { ...devices["Pixel 5"] } }
   ],
   webServer: {
-    command: "yarn build && npx serve -s out -l 3000",
+    command: "yarn build && yarn serve -s out -l 3000",
     url: "http://127.0.0.1:3000",
     reuseExistingServer: !process.env.CI,
     timeout: 300_000

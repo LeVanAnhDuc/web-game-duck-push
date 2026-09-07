@@ -7,9 +7,11 @@
 
 ## Đang làm
 
-**v1-core** trên nhánh `feat/v1-core` — xem `docs/specs/v1-core/plan.md` để biết đang ở task
-nào. Lõi luật chơi, solver, dò bế tắc, session và storage đã xong và xanh. Còn lại: bộ sinh
-màn (mục 3), giao diện (mục 6), và kiểm chứng (mục 7).
+**v1-core** trên nhánh `feat/v1-core` — xem `docs/specs/v1-core/plan.md`. Mọi mục đã xong
+trừ 8.1/8.2 (đóng nhánh) và một việc đang chạy: **sinh lại pack bậc `expert`** sau khi tắt
+hạ chuẩn ở script build (`allowRelax: false`). Bản pack cũ có 4/10 màn tụt xuống dưới sàn 36
+đẩy mà chính bậc đó khai báo, nên `src/game/levels/pack.test.ts` sẽ đỏ cho tới khi pack mới
+được ghi. Ba bậc còn lại đã đúng khuôn: easy 6-13, medium 14-23, hard 22-35 đẩy.
 
 ## Việc tiếp theo
 

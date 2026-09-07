@@ -41,14 +41,36 @@ function generatePack(difficulty: Difficulty, count: number): LevelPack {
   const levels: PackLevel[] = [];
 
   let attemptsTotal = 0;
+  let rejectedOutOfTier = 0;
   const startedAt = Date.now();
 
   while (levels.length < count) {
     const seed = rng.int(0xffffffff);
-    const result = generateLevel({ seed, difficulty, budget, maxAttempts: profile.maxAttempts });
+    const result = generateLevel({
+      seed,
+      difficulty,
+      budget,
+      maxAttempts: profile.maxAttempts,
+      // Không hạ chuẩn ở đây: script thử lại bằng seed khác không mất gì, còn một màn
+      // 29 đẩy nằm trong bậc "Rất khó" làm nhãn độ khó nói sai.
+      allowRelax: false
+    });
     if (!result) continue;
 
     attemptsTotal += result.attempts;
+
+    /*
+     * `generateLevel` hạ chuẩn khi gần cạn ngân sách và trả về một màn dễ hơn khuôn.
+     * Đó là hành vi đúng **trong trình duyệt** — người chơi đang chờ, và một màn dễ
+     * hơn một bậc tốt hơn hẳn một hộp báo lỗi. Ở đây thì không: script build thử lại
+     * bằng một seed khác không mất gì cả, còn một màn 29 đẩy nằm trong bậc "Rất khó"
+     * làm nhãn độ khó nói sai. Sàn của bậc được giữ nghiêm ở đúng chỗ này.
+     */
+    const { optimalPushes } = result.level;
+    if (optimalPushes < profile.minPushes || optimalPushes > profile.maxPushes) {
+      rejectedOutOfTier += 1;
+      continue;
+    }
     const packLevel: PackLevel = {
       ...levelToPackLevel(result.level),
       id: `${difficulty}-${String(levels.length + 1).padStart(2, "0")}`
@@ -67,8 +89,9 @@ function generatePack(difficulty: Difficulty, count: number): LevelPack {
   }
 
   const seconds = ((Date.now() - startedAt) / 1000).toFixed(1);
+  const outOfTier = rejectedOutOfTier > 0 ? `, ${rejectedOutOfTier} màn ngoài khuôn bậc` : "";
   process.stdout.write(
-    `${difficulty}: ${levels.length} màn, ${attemptsTotal} ứng viên đã vứt, ${seconds}s\n\n`
+    `${difficulty}: ${levels.length} màn, ${attemptsTotal} ứng viên đã vứt${outOfTier}, ${seconds}s\n\n`
   );
 
   return { version: 1, difficulty, seed: packSeed, levels };

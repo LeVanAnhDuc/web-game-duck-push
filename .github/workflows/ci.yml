@@ -79,61 +79,24 @@ jobs:
           path: playwright-report/
           retention-days: 7
 
-  # Also separate, and for the same reason: the audit talks to the registry and
-  # needs no node_modules at all, so making the tests wait behind it would be pure
-  # queueing. NFR-SEC-05 names CI as where this threshold is checked; this is it.
-  audit:
+  # NFR-SEC-05 in CI. It is here rather than as a `yarn audit` step because yarn 1's
+  # audit endpoint no longer answers -- `registry.yarnpkg.com/-/npm/v1/security/audits`
+  # returns ESOCKETTIMEDOUT on a laptop and on a runner alike. A gate that goes green
+  # because it never ran is worse than no gate, and that is exactly what the sibling
+  # web-game projects shipped. GITHUB_TOKEN also cannot read Dependabot alerts
+  # (403 "Resource not accessible by integration"), so neither obvious in-job check
+  # works without a personal access token. See ADR-0006.
+  #
+  # This reviews the dependency diff of the pull request, which is where a vulnerable
+  # dependency actually enters the project. A vulnerability newly disclosed against a
+  # dependency already here arrives instead as a Dependabot alert and its automated
+  # fix PR -- which then comes back through this same job.
+  dependencies:
+    name: New dependencies
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/dependency-review-action@v4
         with:
-          node-version: 22
-
-      # Yarn 1's `--level` filters what is PRINTED but not the exit code, which is
-      # a bitmask summing every severity found -- so a moderate advisory in a dev
-      # tool would fail this job. Parsing the summary is the only way to gate on
-      # high and critical alone.
-      #
-      # Retried, and an unreachable registry is NOT a failure: an outage must not
-      # turn a security check into a random merge blocker. A real advisory still
-      # fails the job.
-      - name: yarn audit (high and above)
-        run: |
-          for attempt in 1 2 3; do
-            yarn audit --json >/tmp/audit.ndjson 2>/tmp/audit.err || true
-            if grep -qiE 'ENOTFOUND|ETIMEDOUT|ECONNRESET|Service Unavailable|socket hang up|503' /tmp/audit.err; then
-              echo "::warning::audit attempt $attempt could not reach the registry"
-              sleep $((attempt * 15))
-              continue
-            fi
-            node -e '
-              const fs = require("node:fs");
-              const lines = fs.readFileSync("/tmp/audit.ndjson", "utf8").split("\n").filter(Boolean);
-              let high = 0, critical = 0, summarySeen = false;
-              for (const line of lines) {
-                let entry;
-                try { entry = JSON.parse(line); } catch { continue; }
-                if (entry.type === "auditAdvisory") {
-                  const a = entry.data.advisory;
-                  if (a.severity === "high" || a.severity === "critical") {
-                    console.log(`${a.severity.toUpperCase()}  ${a.module_name}  ${a.title}`);
-                  }
-                }
-                if (entry.type === "auditSummary") {
-                  summarySeen = true;
-                  const v = entry.data.vulnerabilities || {};
-                  high = v.high || 0;
-                  critical = v.critical || 0;
-                }
-              }
-              if (!summarySeen) {
-                console.log("::warning::yarn audit produced no summary; treating as inconclusive");
-                process.exit(0);
-              }
-              console.log(`high=${high} critical=${critical}`);
-              process.exit(high + critical > 0 ? 1 : 0);
-            '
-            exit $?
-          done
-          echo "::warning::yarn audit could not reach the registry after 3 attempts; not failing the build for someone else's outage"
+          fail-on-severity: high

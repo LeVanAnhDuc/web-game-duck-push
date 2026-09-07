@@ -23,7 +23,7 @@ chúng chỉ đọc lịch sử git, không dính gì tới toolchain. Ba workfl
 
 - **`ci.yml`** (mỗi pull request) — ba job chạy song song: `verify` (typecheck · lint ·
   unit test · build · in kích thước gzip), `e2e` (Playwright trên bản build tĩnh thật),
-  `audit`.
+  `dependencies` (`actions/dependency-review-action`, `fail-on-severity: high`).
 - **`deploy.yml`** (push vào `main`) — typecheck · test · build với `GITHUB_PAGES=true` ·
   đẩy lên Pages. **Không chạy e2e**: commit merge mang đúng cây mà pull request đã kiểm.
 - **`release.yml`** (push vào `main`) — tính phiên bản từ commit subject, chạy lại toàn bộ
@@ -41,8 +41,8 @@ commit HEAD**.
 | `gh release create --generate-notes` | Nó liệt kê **pull request đã merge**. Một push gồm các commit trực tiếp sẽ ra ghi chú rỗng, chỉ còn cái link so sánh. Soạn từ commit subject thì đúng trong cả hai trường hợp, và dùng đúng dữ liệu đã dùng để tính số phiên bản — nên số và ghi chú không bao giờ nói khác nhau |
 | `semantic-release` / `changesets` | Kéo về cả một cây dependency và một tệp cấu hình để làm đúng việc mà 60 dòng bash đang làm, trong một repo không publish package nào |
 | Đọc dấu `[release major]` cả trong thân commit | Thân commit ở dự án này viết dài và **bàn về chính chuyện phát hành**. Đọc cả thân thì viết về một bump major sẽ tạo ra một bump major |
-| `yarn audit --level high` để tự gác cổng | Yarn 1 lọc **cái được in**, không lọc **mã thoát** — mã thoát là bitmask cộng mọi mức. Một advisory mức moderate trong một dev tool sẽ chặn mọi pull request. Phải đọc `auditSummary` từ đầu ra JSON mới gác đúng mức high trở lên |
-| Gộp audit vào job `verify` | Audit gọi ra registry và không cần `node_modules`; để nó đứng trước test là bắt test xếp hàng sau mạng của người khác |
+| **`yarn audit` ở bất kỳ dạng nào** | Endpoint audit của Yarn 1 đã chết: `registry.yarnpkg.com/-/npm/v1/security/audits` trả `ESOCKETTIMEDOUT` ở cả máy cá nhân lẫn runner GitHub (kiểm 2026-09-07). Các game anh em trong `web-game/` đang chạy đúng cái gate này và nó **xanh giả** — in ra "0 advisory" rồi exit 0 vì audit chưa từng chạy. Một cổng xanh vì nó không chạy còn tệ hơn không có cổng, vì nó mua được vẻ ngoài của sự an toàn |
+| Đọc Dependabot alert trong job CI | `GITHUB_TOKEN` không có quyền đọc alert — 403 "Resource not accessible by integration". Cần personal access token, tức là một secret phải quản lý, cho một thứ mà Dependabot đã tự gửi PR sửa |
 | Chạy e2e cả ở `deploy.yml` | Nhân đôi job chậm nhất để chứng minh lại đúng cái cây mà CI vừa chứng minh |
 | Gác cứng ngưỡng 200KB trong CI | Pack màn đã code-split theo bậc, nên con số đáng nhìn là cụm chunk dùng chung. In ra thì thấy được; gác cứng chỉ nổ đúng vào lúc log này đã nói rồi |
 
@@ -54,6 +54,8 @@ commit HEAD**.
 - Cả hai script chạy được ở máy (`bash .github/scripts/next-version.sh`), nên xem trước
   được một bản phát hành sẽ nói gì **trước khi** nó nói.
 - Bộ e2e và bộ kiểm pack chạy ở nơi chúng chặn được merge, không phải sau khi merge.
+- Cổng bảo mật **thật sự chạy**: dependency review đọc đúng phần dependency mà pull
+  request thêm vào — chính là chỗ một thư viện có lỗ hổng bước vào dự án.
 
 **Mất / phải chấp nhận:**
 - **Commit message trở thành phần của sản phẩm.** Một subject không theo Conventional
@@ -62,8 +64,12 @@ commit HEAD**.
   giá của bất biến #17, và là cái giá đã chọn.
 - GitHub Pages vẫn phải bật **một lần bằng tay** cho repo — `configure-pages` không làm
   thay được, vì `GITHUB_TOKEN` không có quyền tạo site.
-- Registry sập thì job audit **báo cảnh báo và pass**. Đổi lại là không bị chặn merge vì
-  sự cố của người khác; advisory thật vẫn làm đỏ job.
+- Dependency review chỉ soi **phần thêm mới** của pull request. Một lỗ hổng mới được
+  công bố nhắm vào thư viện **đã có sẵn** không đi qua cổng này — nó đến dưới dạng
+  Dependabot alert và PR sửa tự động, rồi PR đó mới quay lại qua đúng job này.
+- Vì thế **Dependabot phải được bật bằng tay cho repo** (Settings → Advanced Security →
+  Dependabot alerts + security updates). Không bật thì nửa sau của cổng bảo mật không
+  tồn tại, và không có gì trong repo báo cho bạn biết điều đó.
 
 **Điều kiện xem lại:** nếu repo bắt đầu publish package, hoặc nếu số commit mỗi bản phát
 hành lớn tới mức ghi chú theo subject không còn đọc nổi.

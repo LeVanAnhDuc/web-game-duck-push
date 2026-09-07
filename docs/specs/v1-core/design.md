@@ -73,3 +73,24 @@ lại ở đây vì nó là một sai khác so với quy trình, không phải m
   còn sau khi tải lại trang; sinh màn ngẫu nhiên không chặn luồng chính; bàn cờ không cuộn ở
   375px.
 - **Nhìn tận mắt**: chụp màn hình ở 375 / 768 / 1024 / 1440, cả sáng lẫn tối.
+
+## Kết quả kiểm chứng — số đo thật, 2026-09-07
+
+| Đo cái gì | Kết quả | Ngưỡng |
+| --- | --- | --- |
+| Unit test | 114 test / 10 file xanh, trước khi thêm bộ kiểm pack | — |
+| E2E (Playwright, bản build tĩnh) | 12/12 xanh trên cả desktop và mobile | — |
+| JS màn đầu | **147.0 kB gzip** (8 file, 490.1 kB thô) | NFR-PERF-09: ≤ 200 kB |
+| Tốc độ solver | **29.000 nút/giây** ở bàn 11×11 với 4 thùng, **35.000** với 5 thùng | — |
+
+Bộ e2e giải màn `easy-01` bằng **lời giải do chính solver tính trong lúc test**, không
+phải một chuỗi phím viết tay. Nó vì thế kiểm được một điều unit test không với tới: lời
+giải solver nói là tối ưu thì bấm vào giao diện thật cũng thắng thật, và HUD công nhận
+là đạt tối ưu.
+
+## Hiện thực lệch khỏi bản vẽ ở một chỗ
+
+Wireframe mục **D · Desktop 1440** nói HUD thành **cột dọc bên trái** bàn cờ. Hiện thực
+giữ HUD là **dải ngang phía trên** ở mọi bề rộng, chỉ căn lề trái. Nhìn ảnh chụp 1440 thì
+bố cục này sạch hơn và không đẩy bàn cờ lệch tâm; đổi lại là một khoảng trống hai bên ở
+màn hình rộng. Ghi ở đây vì một bản vẽ đã lạc hậu còn tệ hơn không có bản vẽ nào.

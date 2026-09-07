@@ -22,12 +22,12 @@ Nhánh `feat/v1-core`, worktree `../web-game-sokoban.worktrees/v1-core`.
 
 ## 3. Sinh màn (ADR-0003)
 
-- [ ] 3.1 `generator/rooms.ts` — thư viện phòng mẫu, ghép bản đồ, kiểm liên thông
-- [ ] 3.2 `generator/reverse.ts` — đặt thùng bằng đi lùi từ trạng thái thắng
-- [ ] 3.3 `generator/difficulty.ts` — khuôn 4 bậc, ngân sách build vs runtime
-- [ ] 3.4 `generator/generate.ts` — điều phối, hạ chuẩn thay vì trả `null`
-- [ ] 3.5 Sinh pack thật và commit `src/game/levels/data/*.json` (FR-06)
-- [ ] 3.6 Test chạy lại solver trên toàn pack, đối chiếu `optimalPushes` (bất biến #17)
+- [x] 3.1 `generator/rooms.ts` — thư viện phòng mẫu, ghép bản đồ, kiểm liên thông
+- [x] 3.2 `generator/reverse.ts` — đặt thùng bằng đi lùi từ trạng thái thắng
+- [x] 3.3 `generator/difficulty.ts` — khuôn 4 bậc, ngân sách build vs runtime
+- [x] 3.4 `generator/generate.ts` — điều phối, hạ chuẩn thay vì trả `null`
+- [x] 3.5 Sinh pack thật và commit `src/game/levels/data/*.json` (FR-06)
+- [x] 3.6 Test chạy lại solver trên toàn pack, đối chiếu `optimalPushes` (bất biến #17)
 
 ## 4. Ván chơi và lưu trữ
 
@@ -45,20 +45,24 @@ Nhánh `feat/v1-core`, worktree `../web-game-sokoban.worktrees/v1-core`.
 
 ## 6. Giao diện
 
-- [ ] 6.1 Trang chủ: thẻ đang chơi dở, nút màn ngẫu nhiên, tab bậc, lưới chọn màn (FR-07)
-- [ ] 6.2 Bàn chơi: bàn cờ DOM tự co theo viewport, mã hoá bằng hình dạng (FR-01, NFR-A11Y-06)
-- [ ] 6.3 HUD, dải cảnh báo bế tắc, lớp phủ thắng (FR-03, FR-04, FR-05)
-- [ ] 6.4 Điều khiển: bàn phím + vuốt + D-pad chỉ trên cảm ứng (FR-10)
-- [ ] 6.5 Chủ đề sáng/tối, `prefers-reduced-motion` (FR-12)
-- [ ] 6.6 Định tuyến bằng query: `?level=` và `?seed=` (FR-11)
+- [x] 6.1 Trang chủ: thẻ đang chơi dở, nút màn ngẫu nhiên, tab bậc, lưới chọn màn (FR-07)
+- [x] 6.2 Bàn chơi: bàn cờ DOM tự co theo viewport, mã hoá bằng hình dạng (FR-01, NFR-A11Y-06)
+- [x] 6.3 HUD, dải cảnh báo bế tắc, lớp phủ thắng (FR-03, FR-04, FR-05)
+- [x] 6.4 Điều khiển: bàn phím + vuốt + D-pad chỉ trên cảm ứng (FR-10)
+- [x] 6.5 Chủ đề sáng/tối, `prefers-reduced-motion` (FR-12)
+- [x] 6.6 Định tuyến bằng query: `?level=` và `?seed=` (FR-11)
 
 ## 7. Kiểm chứng
 
-- [ ] 7.1 `yarn tsc --noEmit`, `yarn lint`, `yarn build` sạch
+Mục 7.4 mở rộng so với kế hoạch ban đầu: ngoài workflow deploy còn có `ci.yml` (gác
+pull request) và `release.yml` + hai script phát hành, chép từ `web-game-tetris` và
+sửa cho Yarn + Next static export — ADR-0006.
+
+- [x] 7.1 `yarn tsc --noEmit`, `yarn lint`, `yarn build` sạch
 - [ ] 7.2 E2E: thắng một màn chỉ bằng bàn phím; undo; kỷ lục sống qua reload; bàn không cuộn
 - [ ] 7.3 Chụp màn hình 375 / 768 / 1024 / 1440, sáng và tối
-- [ ] 7.4 Workflow GitHub Pages
-- [ ] 7.5 README `## Features`
+- [x] 7.4 Workflow GitHub Pages
+- [x] 7.5 README `## Features`
 
 ## 8. Đóng
 

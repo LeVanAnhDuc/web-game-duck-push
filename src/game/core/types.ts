@@ -98,6 +98,15 @@ export interface GenerateOptions {
   readonly budget: SolverBudget;
   /** Số ứng viên tối đa được dựng rồi vứt trước khi bỏ cuộc. */
   readonly maxAttempts: number;
+  /**
+   * Cho phép hạ chuẩn khi gần cạn ngân sách. Mặc định `true`.
+   *
+   * Trong trình duyệt phải bật: người chơi đang chờ, và một màn dễ hơn một bậc tốt
+   * hơn hẳn một hộp báo lỗi. Ở script build thì tắt — thử lại bằng seed khác không
+   * mất gì, còn hạ chuẩn thì 40% lượt thử cuối nhắm vào một bậc dễ hơn nên chúng
+   * **không thể** ra màn đúng bậc, tức là ngân sách bị tiêu vào việc không cần.
+   */
+  readonly allowRelax?: boolean;
 }
 
 export interface GenerateResult {

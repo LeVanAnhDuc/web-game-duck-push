@@ -85,7 +85,7 @@ Every push to `main` creates a GitHub Release by itself
 ([`.github/workflows/release.yml`](.github/workflows/release.yml)), and deploys to
 **<https://levananhduc.github.io/web-game-sokoban/>**
 ([`deploy.yml`](.github/workflows/deploy.yml)). Pull requests run typecheck, lint, unit
-tests, a build, the browser suite and a dependency audit first
+tests, a build, the browser suite and a dependency review first
 ([`ci.yml`](.github/workflows/ci.yml)).
 
 Pages has to be enabled **once per repository** before the first deploy can succeed —
@@ -95,6 +95,12 @@ Pages site:
 ```bash
 gh api -X POST repos/LeVanAnhDuc/web-game-sokoban/pages -f build_type=workflow
 ```
+
+**Dependabot has to be enabled once too**, under Settings → Advanced Security. CI reviews
+the dependencies a pull request *adds*; a vulnerability newly disclosed against something
+already here arrives as a Dependabot alert and its fix PR instead. There is deliberately
+no `yarn audit` step — yarn 1's audit endpoint no longer answers, so that step passes
+green without having checked anything.
 
 **The version comes from your commit subjects**, so they have to follow Conventional
 Commits. The whole range since the previous tag is scanned, so one `feat:` anywhere in a

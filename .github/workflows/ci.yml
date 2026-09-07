@@ -1,0 +1,102 @@
+name: CI
+
+# Runs on every pull request. Without this, a branch could be merged red and the
+# first thing to notice would be the deploy job on `main` -- after the merge.
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+
+      # `--frozen-lockfile` and not a plain install: the lockfile is the answer.
+      # This workspace has already been bitten by a resolved-at-install dependency
+      # tree that differed from the one the tests were written against.
+      - run: yarn install --frozen-lockfile
+
+      - run: yarn typecheck
+      - run: yarn lint
+
+      # Slower than it looks, on purpose: this includes the pack suite, which
+      # re-runs the solver over all 65 committed levels and checks the recorded
+      # optimal push count (invariant #17). A stale pack still parses and still
+      # plays -- the only symptom is a HUD target nobody can reach and a star that
+      # never lights. Re-solving is the only thing that catches it.
+      - run: yarn test
+
+      - run: yarn build
+
+      - name: Report bundle size against NFR-PERF-09
+        run: |
+          # The threshold lives in docs/02-requirements/nfr.md: 200KB gzip for the
+          # JS the first screen pulls. Printed rather than enforced -- the level
+          # packs are code-split per difficulty, so the interesting number is the
+          # shared chunk set, and a hard gate here would fire on a mistake this log
+          # already makes visible.
+          echo "gzip sizes of the built JS chunks:"
+          total=0
+          for f in $(find out/_next/static -name '*.js' | sort); do
+            size=$(gzip -c "$f" | wc -c)
+            total=$((total + size))
+            printf '  %-52s %6.1f kB\n' "${f#out/_next/static/}" "$(echo "$size" | awk '{print $1/1024}')"
+          done
+          printf '  %-52s %6.1f kB\n' "TOTAL" "$(echo "$total" | awk '{print $1/1024}')"
+
+  # A separate job so the browser suite runs beside the unit tests instead of
+  # queueing behind them. It is also the only place that proves the built static
+  # export actually plays: the unit suite never touches the DOM.
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn playwright install --with-deps chromium
+      # playwright.config.ts builds and serves `out/` itself, so there is no
+      # separate build step here.
+      - run: yarn test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  # NFR-SEC-05 in CI. It is here rather than as a `yarn audit` step because yarn 1's
+  # audit endpoint no longer answers -- `registry.yarnpkg.com/-/npm/v1/security/audits`
+  # returns ESOCKETTIMEDOUT on a laptop and on a runner alike. A gate that goes green
+  # because it never ran is worse than no gate, and that is exactly what the sibling
+  # web-game projects shipped. GITHUB_TOKEN also cannot read Dependabot alerts
+  # (403 "Resource not accessible by integration"), so neither obvious in-job check
+  # works without a personal access token. See ADR-0006.
+  #
+  # This reviews the dependency diff of the pull request, which is where a vulnerable
+  # dependency actually enters the project. A vulnerability newly disclosed against a
+  # dependency already here arrives instead as a Dependabot alert and its automated
+  # fix PR -- which then comes back through this same job.
+  dependencies:
+    name: New dependencies
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high

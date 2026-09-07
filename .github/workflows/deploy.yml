@@ -1,0 +1,69 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn typecheck
+
+      # The pack suite here too: it is the one check standing between a stale
+      # level pack and a deploy, and it costs less than a wrong `optimalPushes`
+      # sitting live on the HUD.
+      - run: yarn test
+
+      # No browser suite in this job. Pull requests run it (ci.yml), and a merge
+      # commit carries the same tree the pull request tested -- running it twice
+      # would double the slowest job in the pipeline to re-prove the same thing.
+      - run: yarn build
+        env:
+          # Unlike the sibling Vite games, which set `base: './'` and need no env
+          # var, Next resolves basePath and assetPrefix at build time. GitHub Pages
+          # serves this repo under /web-game-sokoban, so the deploy build -- and
+          # only the deploy build -- has to be told. Setting it locally would break
+          # `yarn dev`. See .env.example.
+          GITHUB_PAGES: "true"
+
+      # Next puts every asset under _next/, and anything starting with an
+      # underscore is invisible to Jekyll.
+      - run: touch out/.nojekyll
+
+      # `enablement` does NOT replace enabling Pages once for the repository:
+      # GITHUB_TOKEN is not allowed to create a Pages site. It is kept because it
+      # costs nothing and helps a fork whose owner has already enabled Pages. The
+      # one-time command is in README §Releases and versioning.
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

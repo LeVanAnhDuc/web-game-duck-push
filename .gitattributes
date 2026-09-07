@@ -1,0 +1,19 @@
+# Kết thúc dòng được quyết định ở đây, không phụ thuộc `core.autocrlf` của từng máy.
+#
+# Dự án viết trên Windows nhưng chạy CI trên Ubuntu. Hiện tại các file trong repo đều
+# đã là LF nhờ `core.autocrlf=true` ở máy đang dùng — nhưng đó là một cấu hình cục bộ,
+# không phải một bảo đảm. Một người clone với `autocrlf=false` rồi commit một file `.sh`
+# sẽ đẩy CRLF vào repo, và script đó chết ngay dòng đầu trên CI với
+# `$'\r': command not found` — chỉ trên CI, không bao giờ trên máy vừa commit nó.
+# File này biến bảo đảm ấy thành thuộc tính của repo.
+* text=auto
+
+*.sh text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff binary
+*.woff2 binary

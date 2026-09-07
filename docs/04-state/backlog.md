@@ -11,10 +11,14 @@
 mở pull request. 131 unit test và 12 e2e xanh; 65 màn trong pack đều giải lại đúng số đẩy
 tối ưu; bốn bậc tách bạch ở 6-13 · 14-23 · 22-35 · 37-45 đẩy.
 
-Một việc phải làm bằng tay trên GitHub sau khi merge, không có gì trong repo nhắc được:
-**bật GitHub Pages** (`gh api -X POST repos/LeVanAnhDuc/web-game-sokoban/pages -f
-build_type=workflow`) và **bật Dependabot alerts + security updates**. Thiếu cái thứ hai
-thì nửa sau của cổng bảo mật trong `ci.yml` không tồn tại.
+Hai cấu hình GitHub mà không dòng code nào trong repo bật được — **đã bật xong** ngày
+2026-09-07, ghi lại ở đây vì một repo clone mới sẽ không có chúng:
+
+- **GitHub Pages**, `build_type=workflow` → https://levananhduc.github.io/web-game-sokoban/
+- **Vulnerability alerts + Dependabot security updates.** `dependency-review-action` đỏ
+  ngay lần chạy đầu với "Dependency review is not supported on this repository" — dependency
+  graph của repo chưa bật, và bật vulnerability alerts là thứ kéo nó theo. Đúng kiểu hỏng
+  mà một cổng "audit xanh giả" sẽ che mất: ở đây nó đỏ, nên nó được sửa.
 
 ## Việc tiếp theo
 

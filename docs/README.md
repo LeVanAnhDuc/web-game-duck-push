@@ -1,4 +1,4 @@
-# Tài liệu dự án `web-game-sokoban`
+# Tài liệu dự án `web-game-duck-push`
 
 ## Bản đồ
 

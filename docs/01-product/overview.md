@@ -7,8 +7,8 @@
 
 ## 1. Một câu định vị
 
-Sokoban chơi được ngay trên trình duyệt, với **màn chơi do máy sinh và đã được solver
-kiểm định là giải được**, kèm số bước tối ưu để người chơi có đích mà đuổi — khác các bản
+Duck Push là Sokoban chơi được ngay trên trình duyệt, với **màn chơi do máy sinh
+và đã được solver kiểm định là giải được**, kèm số bước tối ưu để người chơi có đích mà đuổi — khác các bản
 Sokoban web khác ở chỗ nguồn màn không cạn và độ khó là con số đo được, không phải nhãn dán.
 
 ## 2. Vấn đề đang giải

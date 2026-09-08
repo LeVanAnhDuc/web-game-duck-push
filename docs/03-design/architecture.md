@@ -9,7 +9,7 @@
 
 ```mermaid
 graph LR
-  User[Người chơi] --> App[Sokoban - trang tĩnh]
+  User[Người chơi] --> App[Duck Push - trang tĩnh]
   App --> LS[(localStorage của trình duyệt)]
   App --> Pack[/src/game/levels/data/*.json - pack màn tĩnh/]
   CI[GitHub Actions] -->|sinh pack lúc build| Pack

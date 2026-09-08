@@ -160,7 +160,7 @@ not the major. Nothing is stable before 1.0, and `1.0.0` is a claim about comple
 so crossing to it takes the explicit marker rather than happening on its own. The first
 release of this repo is `v0.1.0` for the same reason.
 
-Three markers, honoured **only in the HEAD commit subject** (not in bodies — the bodies
+Three markers, read from **commit subjects across the whole range since the last tag** (not in bodies — the bodies
 here run long and discuss releases, which would otherwise trigger them):
 
 - `[release minor]` / `[release major]` — force a bigger bump. `[release major]` is the
@@ -170,14 +170,14 @@ here run long and discuss releases, which would otherwise trigger them):
   feature's release too.
 
 **The notes are composed from the commit subjects**, grouped by type, breaking changes
-first — see [`release-notes.sh`](.github/scripts/release-notes.sh). Not from
+first — the groups live in [`cliff.toml`](cliff.toml). Not from
 `--generate-notes`, which lists merged pull requests and therefore says nothing at all
 when a push was direct commits. Both scripts run locally, so you can see what a release
 will say before it says it:
 
 ```bash
-bash .github/scripts/next-version.sh
-bash .github/scripts/release-notes.sh v0.2.0 v0.1.0
+yarn release:next     # which tag the next release would get
+yarn release:notes    # what its notes would say
 ```
 
 **The README is not automated.** Any `feat:` that changes what a player can do must

@@ -43,7 +43,7 @@ jobs:
         env:
           # Unlike the sibling Vite games, which set `base: './'` and need no env
           # var, Next resolves basePath and assetPrefix at build time. GitHub Pages
-          # serves this repo under /web-game-sokoban, so the deploy build -- and
+          # serves this repo under /web-game-duck-push, so the deploy build -- and
           # only the deploy build -- has to be told. Setting it locally would break
           # `yarn dev`. See .env.example.
           GITHUB_PAGES: "true"

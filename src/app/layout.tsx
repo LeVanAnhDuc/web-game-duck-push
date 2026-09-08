@@ -17,8 +17,8 @@ const mono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sokoban",
-  description: "Sokoban với màn chơi do máy sinh, đã kiểm định là giải được."
+  title: "Duck Push",
+  description: "Duck Push - Sokoban với màn chơi do máy sinh, đã kiểm định là giải được."
 };
 
 export const viewport: Viewport = {

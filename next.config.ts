@@ -6,7 +6,7 @@ import type { NextConfig } from "next";
  * ở máy vẫn chạy ở gốc như bình thường.
  */
 const isGithubPages = process.env.GITHUB_PAGES === "true";
-const basePath = "/web-game-sokoban";
+const basePath = "/web-game-duck-push";
 
 const nextConfig: NextConfig = {
   /** Game chạy hoàn toàn phía client nên xuất được ra HTML tĩnh — không cần máy chủ Node. */

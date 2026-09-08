@@ -1,9 +1,9 @@
-# Design System Master File — Sokoban
+# Design System Master File — Duck Push
 
 > **LOGIC:** When building a specific page, first check `pages/[page-name].md`.
 > If that file exists, its rules **override** this Master file. Otherwise follow the rules below.
 
-**Project:** Sokoban · **Category:** Puzzle game (grid, turn-based)
+**Project:** Duck Push · **Category:** Puzzle game (grid, turn-based)
 **Bootstrapped:** 2026-09-04 · `ui-ux-pro-max --design-system` → constraints, `frontend-design` → choices
 **Decision record:** [ADR-0001](../../decisions/0001-design-tokens.md)
 

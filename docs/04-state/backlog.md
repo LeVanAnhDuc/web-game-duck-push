@@ -7,6 +7,19 @@
 
 ## Đang làm
 
+**Đổi thương hiệu sang `Duck Push`** (2026-09-08). Repo GitHub đổi từ
+`web-game-sokoban` thành `web-game-duck-push`; GitHub redirect URL *repo* cũ nhưng
+**không** redirect đường dẫn Pages cũ — địa chỉ chơi giờ là
+<https://levananhduc.github.io/web-game-duck-push/>. **Thư mục local vẫn là**
+`web-game-sokoban`, nên mọi chỗ nói `../web-game-sokoban.worktrees/` (kể cả ô Nợ kỹ
+thuật ở dưới và `docs/specs/v1-core/plan.md`) **giữ nguyên có ý** — đó là đường dẫn
+trên máy, không phải slug repo.
+
+Từ "Sokoban" giữ nguyên ở mọi chỗ nói về *thể loại và luật* (README, `journeys.md`,
+`invariants.md` #13, `useSokobanGame`); chỉ tên sản phẩm đổi. Khoá `localStorage`
+(`sokoban:progress:v1`, `sokoban:settings:v1`) **không** đổi: đổi là xoá tiến độ chiến
+dịch của người đang chơi.
+
 **v1-core** trên nhánh `feat/v1-core` — xong toàn bộ `docs/specs/v1-core/plan.md`, chỉ còn
 mở pull request. 131 unit test và 12 e2e xanh; 65 màn trong pack đều giải lại đúng số đẩy
 tối ưu; bốn bậc tách bạch ở 6-13 · 14-23 · 22-35 · 37-45 đẩy.
@@ -14,7 +27,7 @@ tối ưu; bốn bậc tách bạch ở 6-13 · 14-23 · 22-35 · 37-45 đẩy.
 Hai cấu hình GitHub mà không dòng code nào trong repo bật được — **đã bật xong** ngày
 2026-09-07, ghi lại ở đây vì một repo clone mới sẽ không có chúng:
 
-- **GitHub Pages**, `build_type=workflow` → https://levananhduc.github.io/web-game-sokoban/
+- **GitHub Pages**, `build_type=workflow` → https://levananhduc.github.io/web-game-duck-push/
 - **Vulnerability alerts + Dependabot security updates.** `dependency-review-action` đỏ
   ngay lần chạy đầu với "Dependency review is not supported on this repository" — dependency
   graph của repo chưa bật, và bật vulnerability alerts là thứ kéo nó theo. Đúng kiểu hỏng

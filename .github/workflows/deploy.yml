@@ -24,6 +24,11 @@ jobs:
           node-version: 22
           cache: yarn
       - run: yarn install --frozen-lockfile
+
+      # Lint chay o day chu khong chi trong ci.yml: `build` bat duoc loi kieu
+      # nhung khong bat vi pham lint, va mot push thang vao `main` khong di
+      # qua pull request.
+      - run: yarn lint
       - run: yarn typecheck
 
       # The pack suite here too: it is the one check standing between a stale

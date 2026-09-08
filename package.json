@@ -13,7 +13,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "levels:generate": "tsx scripts/generate-pack.ts"
+    "levels:generate": "tsx scripts/generate-pack.ts",
+    "release:next": "npx --yes git-cliff@2.13.1 --bumped-version",
+    "release:notes": "npx --yes git-cliff@2.13.1 --unreleased --tag $(npx --yes git-cliff@2.13.1 --bumped-version) --strip all"
   },
   "dependencies": {
     "clsx": "^2.1.1",

@@ -1,8 +1,8 @@
 "use client";
 
 import { RotateCcw, Trophy, Undo2, Redo2 } from "lucide-react";
-import { DPad } from "./DPad";
-import { Button } from "@/components/ui/Button";
+import { DPad } from "../DPad";
+import { Button } from "@/components/Button";
 import { useCoarsePointer } from "@/hooks/useMediaQuery";
 import type { Direction } from "@/game/core/types";
 

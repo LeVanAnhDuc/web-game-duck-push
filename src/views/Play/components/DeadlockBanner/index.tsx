@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertTriangle, Undo2 } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/Button";
 
 /**
  * Cảnh báo bế tắc — **dải tĩnh, không phải hộp thoại**.

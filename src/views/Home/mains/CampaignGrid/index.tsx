@@ -2,9 +2,9 @@
 
 import { Check, Loader2, Star } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { Button } from "@/components/ui/Button";
-import { LevelTile } from "./LevelTile";
-import { campaignNumber } from "@/components/level/levelText";
+import { Button } from "@/components/Button";
+import { LevelTile } from "../../components/LevelTile";
+import { campaignNumber } from "@/lib/levelText";
 import type { Difficulty, LevelPack } from "@/game/core/types";
 import { loadPack } from "@/game/levels/packLoader";
 import type { LevelRecord } from "@/game/storage/types";

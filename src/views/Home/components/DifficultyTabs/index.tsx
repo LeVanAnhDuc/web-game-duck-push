@@ -1,7 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import { DIFFICULTY_LABELS } from "@/components/level/levelText";
+import { DIFFICULTY_LABELS } from "@/lib/levelText";
 import { DIFFICULTIES, type Difficulty } from "@/game/core/types";
 
 /**

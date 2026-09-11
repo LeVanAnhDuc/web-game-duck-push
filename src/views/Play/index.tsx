@@ -1,20 +1,29 @@
 "use client";
 
+// libs
 import { useRef, useState } from "react";
-import { BackBar } from "./BackBar";
-import { Controls } from "./Controls";
-import { DeadlockBanner } from "./DeadlockBanner";
-import { HudStrip } from "./HudStrip";
-import { WinOverlay } from "./WinOverlay";
-import { Board } from "@/components/board/Board";
+
+// types
 import type { Direction, Level } from "@/game/core/types";
 import type { GameSession } from "@/game/session/types";
-import { useCellSize } from "@/hooks/useCellSize";
-import { useElapsedTime } from "@/hooks/useElapsedTime";
-import { useKeyboardControls } from "@/hooks/useKeyboardControls";
-import { useSettings } from "@/hooks/useSettings";
-import { useSokobanGame } from "@/hooks/useSokobanGame";
-import { useSwipe } from "@/hooks/useSwipe";
+
+// hooks
+import {
+  useCellSize,
+  useElapsedTime,
+  useKeyboardControls,
+  useSettings,
+  useSokobanGame,
+  useSwipe
+} from "@/hooks";
+
+// components
+import { BackBar } from "./mains/BackBar";
+import { Board } from "./mains/Board";
+import { Controls } from "./components/Controls";
+import { DeadlockBanner } from "./components/DeadlockBanner";
+import { HudStrip } from "./components/HudStrip";
+import { WinOverlay } from "./components/WinOverlay";
 
 /**
  * Bàn chơi.

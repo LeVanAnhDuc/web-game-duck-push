@@ -2,9 +2,9 @@
 
 import { ArrowRight, RotateCcw, Star } from "lucide-react";
 import { formatDuration } from "@/hooks/useElapsedTime";
-import { Button } from "@/components/ui/Button";
-import { Modal } from "@/components/ui/Modal";
-import { levelTitle } from "@/components/level/levelText";
+import { Button } from "@/components/Button";
+import { Modal } from "@/components/Modal";
+import { levelTitle } from "@/lib/levelText";
 import type { LevelRecord } from "@/game/storage/types";
 
 /**

@@ -2,7 +2,7 @@
 
 import { ChevronRight, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { DIFFICULTY_LABELS, levelTitle } from "@/components/level/levelText";
+import { DIFFICULTY_LABELS, levelTitle } from "@/lib/levelText";
 import { loadLevel } from "@/game/levels/packLoader";
 import { replay } from "@/game/session/session";
 import { formatDuration } from "@/hooks/useElapsedTime";

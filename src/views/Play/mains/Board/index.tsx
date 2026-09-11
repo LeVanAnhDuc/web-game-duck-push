@@ -1,12 +1,12 @@
 "use client";
 
 import { useMemo } from "react";
-import { boardLabel } from "./boardLabel";
-import { CrateSprite } from "./CrateSprite";
-import { GoalRings } from "./GoalRings";
-import { PlayerSprite } from "./PlayerSprite";
-import { StaticGrid } from "./StaticGrid";
-import { TrailDots } from "./TrailDots";
+import { boardLabel } from "@/lib/boardLabel";
+import { CrateSprite } from "../../components/CrateSprite";
+import { GoalRings } from "../../components/GoalRings";
+import { PlayerSprite } from "../../components/PlayerSprite";
+import { StaticGrid } from "../../components/StaticGrid";
+import { TrailDots } from "../../components/TrailDots";
 import { useCrateIdentities } from "@/hooks/useCrateIdentities";
 import { isGoal } from "@/game/core/rules";
 import type { CellIndex, LevelState } from "@/game/core/types";

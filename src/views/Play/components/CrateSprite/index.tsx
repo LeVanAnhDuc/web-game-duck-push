@@ -1,7 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import { cellTransform } from "./geometry";
+import { cellTransform } from "@/lib/boardGeometry";
 import type { CellIndex } from "@/game/core/types";
 
 /**

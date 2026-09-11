@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { nextCampaignId } from "@/components/level/levelText";
+import { nextCampaignId } from "@/lib/levelText";
 import { describe, parseBootTarget, resolveBootTarget, writeUrl } from "./levelRouting";
 import type { Difficulty, Direction, Level } from "@/game/core/types";
 import { loadLevel } from "@/game/levels/packLoader";

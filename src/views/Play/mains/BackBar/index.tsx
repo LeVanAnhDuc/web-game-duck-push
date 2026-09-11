@@ -1,8 +1,8 @@
 "use client";
 
 import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/Button";
-import { DIFFICULTY_LABELS, levelTitle } from "@/components/level/levelText";
+import { Button } from "@/components/Button";
+import { DIFFICULTY_LABELS, levelTitle } from "@/lib/levelText";
 import type { Difficulty } from "@/game/core/types";
 
 /** Thanh trên cùng của bàn chơi: đường về, tên màn, bậc khó. */

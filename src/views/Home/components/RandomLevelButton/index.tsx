@@ -2,8 +2,8 @@
 
 import { Shuffle } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/Button";
-import { DIFFICULTY_LABELS } from "@/components/level/levelText";
+import { Button } from "@/components/Button";
+import { DIFFICULTY_LABELS } from "@/lib/levelText";
 import type { Difficulty, Level } from "@/game/core/types";
 import { requestRandomLevel } from "@/game/workers/generatorClient";
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { cellTransform } from "./geometry";
+import { cellTransform } from "@/lib/boardGeometry";
 import type { Board, CellIndex } from "@/game/core/types";
 
 /**

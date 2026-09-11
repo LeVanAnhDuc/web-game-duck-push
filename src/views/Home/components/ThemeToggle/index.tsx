@@ -1,7 +1,7 @@
 "use client";
 
 import { Monitor, Moon, Sun } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/Button";
 import { THEME_LABELS, useTheme } from "@/hooks/useTheme";
 import type { ThemePreference } from "@/game/storage/types";
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { cellTransform } from "./geometry";
+import { cellTransform } from "@/lib/boardGeometry";
 import { TRAIL_LENGTH } from "@/game/session/types";
 import type { CellIndex } from "@/game/core/types";
 

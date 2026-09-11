@@ -14,7 +14,15 @@
 | [`03-design/invariants.md`](03-design/invariants.md) | Sửa gì thì hệ thống sai **âm thầm** — test vẫn xanh mà kết… | 🟢 đủ — đã rà theo dự án 2026-09-04 | phát hiện một bất biến mới — thường là ngay sau khi ai đó … |
 | [`04-state/backlog.md`](04-state/backlog.md) | Đang làm gì, tiếp theo làm gì, và đang nợ những gì? | 🟢 đủ | bắt đầu/kết thúc một việc · brainstorm ra việc mới · cố ý … |
 | [`design-system/sokoban/MASTER.md`](design-system/sokoban/MASTER.md) | — | — | — |
-| [`decisions/`](decisions/README.md) | Tại sao lại làm thế này? | 7 ADR | mỗi quyết định kỹ thuật |
+| [`ux-reviews/2026-09-12-deployed.md`](ux-reviews/2026-09-12-deployed.md) | — | — | — |
+| [`ux-reviews/2026-09-12-deployed/logs/kiem-chung.md`](ux-reviews/2026-09-12-deployed/logs/kiem-chung.md) | — | — | — |
+| [`ux-reviews/2026-09-12-deployed/logs/p01-blind-p05-nga.md`](ux-reviews/2026-09-12-deployed/logs/p01-blind-p05-nga.md) | — | — | — |
+| [`ux-reviews/2026-09-12-deployed/logs/p02-hung-RR01-RR03-RR04.md`](ux-reviews/2026-09-12-deployed/logs/p02-hung-RR01-RR03-RR04.md) | — | — | — |
+| [`ux-reviews/2026-09-12-deployed/logs/p03-linh-RR02.md`](ux-reviews/2026-09-12-deployed/logs/p03-linh-RR02.md) | — | — | — |
+| [`ux-reviews/2026-09-12-deployed/logs/p04-quan-RR06.md`](ux-reviews/2026-09-12-deployed/logs/p04-quan-RR06.md) | — | — | — |
+| [`ux-reviews/2026-09-12-deployed/logs/p05-minh-RR05.md`](ux-reviews/2026-09-12-deployed/logs/p05-minh-RR05.md) | — | — | — |
+| [`ux-reviews/2026-09-12-deployed/logs/p06-khoa-blindB.md`](ux-reviews/2026-09-12-deployed/logs/p06-khoa-blindB.md) | — | — | — |
+| [`decisions/`](decisions/README.md) | Tại sao lại làm thế này? | 9 ADR | mỗi quyết định kỹ thuật |
 | [`../.env.example`](../.env.example) | cần biến nào để chạy được dự án này? | 🟢 đủ — khớp code tại 2026-09-04 | code đọc một biến mới (process.env.X / os.getenv / os.Gete… |
 <!-- END:auto -->
 

@@ -44,6 +44,7 @@ export interface LevelRouter {
   readonly resumeSaved: (saved: SavedSession) => Promise<void>;
   readonly goHome: () => void;
   readonly goNext: () => Promise<void>;
+  readonly goRandom: () => Promise<void>;
 }
 
 export function useLevelRouter(): LevelRouter {
@@ -127,6 +128,27 @@ export function useLevelRouter(): LevelRouter {
     }
   }, [screen, nextPending, startLevel, failToHome]);
 
+  /**
+   * Sinh một màn ngẫu nhiên cùng bậc, từ chính lớp phủ thắng (F-05).
+   *
+   * Trước đây lớp phủ chỉ có `Chơi lại` và `Tiếp`, nên ở đúng khoảnh khắc hứng thú
+   * cao nhất, lối đi tiếp duy nhất là chiến dịch tuần tự. Người muốn một màn chưa
+   * ai từng chơi bấm `Tiếp` — từ khớp nhất trên màn hình — rồi rơi vào màn kế tiếp
+   * có sẵn, phải tự nhận ra mình đi nhầm và quay về trang chủ.
+   */
+  const goRandom = useCallback(async () => {
+    if (screen.kind !== "play" || nextPending) return;
+    const { level } = screen;
+    setNextPending(true);
+    try {
+      startLevel(await requestRandomLevel(level.difficulty), "random");
+    } catch {
+      failToHome("Không sinh được màn ngẫu nhiên, thử lại giúp mình nhé.");
+    } finally {
+      setNextPending(false);
+    }
+  }, [screen, nextPending, startLevel, failToHome]);
+
   // Đọc đường dẫn đúng một lần lúc mở trang. Mọi thay đổi state đều nằm trong
   // callback của promise, không nằm thẳng trong thân effect: đọc URL rồi đổi
   // màn hình ngay tại chỗ là kiểu vẽ liên hoàn mà React 19 cảnh báo.
@@ -157,6 +179,7 @@ export function useLevelRouter(): LevelRouter {
     openCampaignLevel,
     resumeSaved,
     goHome,
-    goNext
+    goNext,
+    goRandom
   };
 }

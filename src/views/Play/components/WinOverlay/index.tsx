@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, RotateCcw, Star } from "lucide-react";
+import { ArrowRight, RotateCcw, Shuffle, Star } from "lucide-react";
 import { formatDuration } from "@/hooks/useElapsedTime";
 import { Button } from "@/components/Button";
 import { Modal } from "@/components/Modal";
@@ -27,7 +27,8 @@ export function WinOverlay({
   nextPending,
   onClose,
   onRestart,
-  onNext
+  onNext,
+  onRandom
 }: {
   readonly open: boolean;
   readonly levelId: string;
@@ -40,6 +41,7 @@ export function WinOverlay({
   readonly onClose: () => void;
   readonly onRestart: () => void;
   readonly onNext: () => void;
+  readonly onRandom: () => void;
 }) {
   const optimal = pushes <= optimalPushes;
   const beatenRecord = previousRecord !== null && pushes < previousRecord.bestPushes;
@@ -87,6 +89,23 @@ export function WinOverlay({
           {nextPending ? null : <ArrowRight aria-hidden="true" size={18} />}
         </Button>
       </div>
+
+      {/*
+        Lối ra thứ ba, đứng riêng một hàng vì nó không cùng loại với hai nút trên:
+        `Tiếp` và `Chơi lại` đi trong chiến dịch, cái này rời khỏi chiến dịch.
+        Trước đây nó không tồn tại, nên người vừa thắng mà muốn một màn chưa ai từng
+        chơi phải bấm `Tiếp`, rơi vào màn có sẵn, rồi tự quay về trang chủ mới tìm
+        thấy nút đúng — 3 thao tác cho một việc đáng lẽ 1 (F-05).
+      */}
+      <Button
+        variant="ghost"
+        onClick={onRandom}
+        pending={nextPending}
+        className="mt-2 w-full text-[14px]"
+      >
+        {nextPending ? null : <Shuffle aria-hidden="true" size={16} />}
+        Màn ngẫu nhiên
+      </Button>
     </Modal>
   );
 }

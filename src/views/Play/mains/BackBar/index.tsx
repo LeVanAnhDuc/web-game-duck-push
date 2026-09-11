@@ -2,10 +2,17 @@
 
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/Button";
-import { DIFFICULTY_LABELS, levelTitle } from "@/lib/levelText";
+import { levelSubtitle, levelTitle } from "@/lib/levelText";
 import type { Difficulty } from "@/game/core/types";
 
-/** Thanh trên cùng của bàn chơi: đường về, tên màn, bậc khó. */
+/**
+ * Thanh trên cùng của bàn chơi: đường về, tên màn, dòng phụ.
+ *
+ * Dòng phụ của màn ngẫu nhiên mang **seed**, và đó là một việc thật chứ không phải
+ * trang trí: người được bạn gửi link đối chiếu con số đó với `?seed=` trên thanh
+ * địa chỉ để tin mình mở đúng màn (F-06). Trước đây seed nằm ở chính **tên màn** —
+ * "Màn 4152196902" — nên nó vừa làm việc đó vừa trông như một lỗi.
+ */
 export function BackBar({
   levelId,
   difficulty,
@@ -22,7 +29,7 @@ export function BackBar({
       </Button>
       <div className="min-w-0">
         <h1 className="truncate text-[16px] font-medium">{levelTitle(levelId)}</h1>
-        <p className="label leading-tight">{DIFFICULTY_LABELS[difficulty]}</p>
+        <p className="label truncate leading-tight">{levelSubtitle(levelId, difficulty)}</p>
       </div>
     </header>
   );

@@ -61,8 +61,16 @@ export function Controls({
       {coarse ? (
         <DPad onMove={onMove} />
       ) : (
-        <p className="meta text-center text-[var(--color-muted-foreground)]">
-          mũi tên/WASD để đi · Z hoàn tác · R chơi lại
+        /*
+          Dòng cũ là `mũi tên/WASD để đi · Z hoàn tác · R chơi lại`, màu mờ, ở đáy trang.
+          Một persona không chơi game đọc nó rồi nghĩ: "Ủa mũi tên đâu, có thấy hình mũi
+          tên nào trên màn hình này đâu?" và không hiểu `WASD` là gì (F-01). Ba sửa:
+          vẽ chính bốn mũi tên thay vì gọi tên chúng, bỏ `WASD` khỏi đầu dòng (phím vẫn
+          chạy, chỉ không quảng cáo nữa), và nói ra cách bấm chuột vừa thêm vào bàn cờ.
+          Không còn dùng màu mờ: đây là chỉ dẫn duy nhất trên màn hình, không phải chú thích.
+        */
+        <p className="meta text-center text-[var(--color-foreground)]">
+          Bấm vào ô cạnh nhân vật, hoặc dùng phím ← ↑ → ↓ · Z hoàn tác · R chơi lại
         </p>
       )}
     </div>

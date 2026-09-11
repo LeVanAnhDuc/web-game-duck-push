@@ -1,3 +1,4 @@
+import { randomLevelId } from "../level";
 import { isSolved } from "../rules";
 import { createRng } from "../rng";
 import { solve } from "../solver";
@@ -99,9 +100,10 @@ function toLevel(
   moves: number
 ): Level {
   return {
-    // Script sinh pack ghi đè `id` bằng số thứ tự trong pack; ở runtime thì chuỗi này
-    // chính là thứ dán được vào URL để mở lại đúng màn ấy.
-    id: `${options.difficulty}-${options.seed >>> 0}`,
+    // Script sinh pack ghi đè `id` bằng số thứ tự trong pack (`easy-01`); ở runtime
+    // thì đây là mã màn ngẫu nhiên, cố ý mang chữ `r` để không bao giờ bị đọc nhầm
+    // thành một màn chiến dịch có số thứ tự khổng lồ.
+    id: randomLevelId(options.difficulty, options.seed),
     seed: options.seed,
     difficulty: options.difficulty,
     initial,

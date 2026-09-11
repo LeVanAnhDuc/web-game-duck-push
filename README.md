@@ -42,9 +42,13 @@ your records stay on your own device.
 
 - **Built for a phone as much as a keyboard**
 
+  - Click or tap a square next to the character to take one step that way — on a device with
+    a mouse that is the only control the screen actually shows
   - Arrow keys or WASD to move, `Z` to undo, `R` to restart; arrow keys never scroll the page
   - Swipe or use the on-screen D-pad on touch devices — the D-pad only appears where there is no mouse
   - The board resizes to fit the screen instead of scrolling, so the whole puzzle is always visible
+  - The board describes itself to a screen reader by position — where you are, where each crate
+    is, which goals are still empty — not just how many are left
 
 - **Readable for everyone**
 
@@ -61,7 +65,7 @@ your records stay on your own device.
 
 | Action | Keys |
 | ------ | ---- |
-| Move, and push a box you walk into | `↑` `↓` `←` `→` or `W` `A` `S` `D` |
+| Move, and push a box you walk into | `↑` `↓` `←` `→` or `W` `A` `S` `D`, or click a square next to you |
 | Undo | `Z` |
 | Restart the level | `R` |
 

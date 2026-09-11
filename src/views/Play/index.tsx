@@ -41,7 +41,8 @@ export function Play({
   resumeMoves,
   nextPending,
   onBack,
-  onNext
+  onNext,
+  onRandom
 }: {
   readonly level: Level;
   readonly seed: number | null;
@@ -49,6 +50,7 @@ export function Play({
   readonly nextPending: boolean;
   readonly onBack: () => void;
   readonly onNext: () => void;
+  readonly onRandom: () => void;
 }) {
   const { session, canUndo, canRedo, record, move, undoMove, redoMove, restartLevel } =
     useSokobanGame({ level, seed, resumeMoves });
@@ -104,6 +106,7 @@ export function Play({
             trail={session.trail}
             cell={cell}
             showTrail={settings.showTrail}
+            onMove={move}
           />
         </div>
       </div>
@@ -148,6 +151,7 @@ export function Play({
         onClose={() => setDismissedFor(session)}
         onRestart={restartLevel}
         onNext={onNext}
+        onRandom={onRandom}
       />
     </div>
   );

@@ -37,6 +37,7 @@ export default function Page() {
         nextPending={router.nextPending}
         onBack={router.goHome}
         onNext={() => void router.goNext()}
+        onRandom={() => void router.goRandom()}
       />
     );
   }

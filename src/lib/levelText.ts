@@ -1,4 +1,8 @@
+import { randomLevelSeed } from "@/game/core/level";
 import type { Difficulty } from "@/game/core/types";
+
+// Mã màn do `core/` đặt ra; ở đây chỉ đọc lại nó để dựng chữ hiển thị.
+export { randomLevelId, randomLevelSeed } from "@/game/core/level";
 
 /** Chữ hiển thị của bậc khó và tên màn. Một chỗ duy nhất, để hai màn hình không lệch nhau. */
 
@@ -32,6 +36,19 @@ export function levelTitle(levelId: string): string {
   return number === null ? "Màn ngẫu nhiên" : `Màn ${number}`;
 }
 
+/**
+ * Dòng phụ dưới tên màn.
+ *
+ * Với màn ngẫu nhiên, dòng này mang **seed** — và đó là một việc thật, không phải
+ * trang trí. Người được bạn gửi link đối chiếu con số này với `?seed=` trên thanh
+ * địa chỉ để tin rằng mình mở đúng màn: *"con số trong tiêu đề trùng khớp với con
+ * số seed trong link nó gửi"* (phản hồi UX 2026-09, F-06). Đưa tên màn về "Màn
+ * ngẫu nhiên" mà bỏ luôn seed là sửa một chỗ và phá một chỗ khác.
+ */
 export function levelSubtitle(levelId: string, difficulty: Difficulty): string {
-  return `${DIFFICULTY_LABELS[difficulty]}${campaignNumber(levelId) === null ? "" : " · Chiến dịch"}`;
+  const label = DIFFICULTY_LABELS[difficulty];
+  if (campaignNumber(levelId) !== null) return `${label} · Chiến dịch`;
+
+  const seed = randomLevelSeed(levelId);
+  return seed === null ? label : `${label} · Seed ${seed}`;
 }

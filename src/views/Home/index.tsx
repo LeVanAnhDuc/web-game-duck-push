@@ -40,9 +40,19 @@ export function Home({
 
   return (
     <main className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 pt-4 pb-12">
-      <header className="flex items-center justify-between gap-2">
-        <h1 className="screen-title tracking-[0.06em]">SOKOBAN</h1>
-        <ThemeToggle />
+      <header className="flex flex-col gap-2">
+        <div className="flex items-center justify-between gap-2">
+          <h1 className="screen-title tracking-[0.06em]">DUCK PUSH</h1>
+          <ThemeToggle />
+        </div>
+        {/*
+          0/6 người trong lượt review 2026-09 đọc ra được sản phẩm này khác gì (F-02):
+          con số đẩy tối ưu — thứ giữ chân người chơi — chỉ xuất hiện SAU khi họ đã
+          cam kết vào một màn. Một dòng, ở tầng nhìn đầu tiên, nói ra điều đó.
+        */}
+        <p className="text-[14px] text-[var(--color-muted-foreground)]">
+          Sokoban với màn chơi do máy sinh và đã giải trước — bạn luôn biết số đẩy ít nhất.
+        </p>
       </header>
 
       {notice === null ? null : (

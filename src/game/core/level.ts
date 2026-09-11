@@ -1,4 +1,12 @@
-import type { Board, CellIndex, Level, LevelState, PackLevel, StaticCell } from "./types";
+import type {
+  Board,
+  CellIndex,
+  Difficulty,
+  Level,
+  LevelState,
+  PackLevel,
+  StaticCell
+} from "./types";
 
 /**
  * Đọc và ghi định dạng XSB — định dạng văn bản chuẩn của Sokoban.
@@ -142,4 +150,29 @@ export function levelToPackLevel(level: Level): PackLevel {
     optimalPushes: level.optimalPushes,
     optimalMoves: level.optimalMoves
   };
+}
+
+/**
+ * Mã của một màn **ngẫu nhiên**: `easy-r4152196902`.
+ *
+ * Chữ `r` ở giữa là toàn bộ lý do hàm này tồn tại. Trước đây mã là `${bậc}-${seed}`,
+ * thứ khớp đúng mẫu mã màn chiến dịch (`easy-01`), nên tầng đặt tên phía trên coi
+ * một màn vừa sinh ra là màn chiến dịch **số 4.152.196.902** và người chơi đọc được
+ * "Màn 4152196902" (phản hồi UX 2026-09, F-06).
+ *
+ * Seed vẫn nằm nguyên trong mã, vì màn hình chơi phải hiện lại được nó: đó là thứ
+ * người nhận link đối chiếu với `?seed=` để tin mình mở đúng màn bạn gửi.
+ */
+export function randomLevelId(difficulty: Difficulty, seed: number): string {
+  return `${difficulty}-r${seed >>> 0}`;
+}
+
+const RANDOM_ID = /^(?:easy|medium|hard|expert)-r(\d+)$/;
+
+/** Seed đọc ngược ra từ mã màn ngẫu nhiên, hoặc `null` nếu mã không phải dạng đó. */
+export function randomLevelSeed(levelId: string): number | null {
+  const match = RANDOM_ID.exec(levelId);
+  if (!match) return null;
+  const parsed = Number.parseInt(match[1] ?? "", 10);
+  return Number.isFinite(parsed) ? parsed : null;
 }

@@ -15,6 +15,8 @@
 | [ADR-0005](0005-local-storage-only.md) | Lưu toàn bộ tiến độ trong `localStorage`, có `version`, hỏng thì bỏ | 2026-09-04 | accepted |
 | [ADR-0006](0006-release-and-ci-pipeline.md) | Phát hành tự động từ chính commit subject, CI tách ba job | 2026-09-04 | accepted |
 | [ADR-0007](0007-adopt-the-shared-view-conventions.md) | Nhận bộ quy ước view dùng chung của workspace `web-game` | 2026-09-11 | accepted |
+| [ADR-0008](0008-random-level-id-prefix.md) | Mã màn ngẫu nhiên mang tiền tố `r`, và seed chuyển xuống dòng phụ | 2026-09-12 | accepted |
+| [ADR-0009](0009-click-a-neighbour-cell-to-step.md) | Bấm vào ô kề nhân vật để đi một bước, thay vì vẽ D-pad cho mọi thiết bị | 2026-09-12 | accepted |
 <!-- END:auto -->
 
 Trạng thái: `accepted` · `superseded by ADR-00xx` · `deprecated`

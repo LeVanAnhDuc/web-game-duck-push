@@ -191,16 +191,30 @@ lý do.
 
 ### Ai chạy phiên nào — đã chốt, đừng gán lại mỗi lần chạy
 
-| Phiên | Mã phiên | Persona | Đợt | Context |
+| # | Phiên | Mã phiên | Persona | Context |
 | --- | --- | --- | --- | --- |
-| RR-01 | `p01-RR-01` | p01 Thảo | 1 | sạch |
-| RR-02 | `p02-RR-02` | p03 Linh | 1 | sạch, zoom 200% |
-| RR-03 | `p03-RR-03` | p02 Hùng | 1 | sạch |
-| mù A | `p04-blind` | p05 Nga | 1 | sạch |
-| RR-04 | `p05-RR-04` | p01 Thảo | 2 | **tiếp context của `p01-RR-01`** |
-| RR-05 | `p06-RR-05` | p04 Minh | 2 | sạch, tự tạo tiến độ trong phiên |
-| RR-06 | `p07-RR-06` | p07 Quân | 2 | sạch, URL dựng từ seed trong log `p03-RR-03` |
-| mù B | `p08-blind` | p06 Khoa | 2 | sạch |
+| 1 | mù A | `p01-blind` | p05 Nga | sạch — chạy **đầu tiên**, xem bên dưới |
+| 2 | RR-01 | `p02-RR-01` | p01 Thảo | sạch |
+| 3 | RR-04 | `p03-RR-04` | p01 Thảo | **tiếp thẳng context của `p02-RR-01`**, không xoá storage |
+| 4 | RR-02 | `p04-RR-02` | p03 Linh | sạch, zoom 200% |
+| 5 | RR-03 | `p05-RR-03` | p02 Hùng | sạch — **ghi lại `seed` trong URL** |
+| 6 | RR-05 | `p06-RR-05` | p04 Minh | sạch, tự tạo tiến độ trong phiên |
+| 7 | RR-06 | `p07-RR-06` | p07 Quân | sạch, URL dựng từ seed của phiên 5 |
+| 8 | mù B | `p08-blind` | p06 Khoa | sạch |
+
+**Vì sao tuần tự chứ không 4 phiên đồng thời.** `lib/orchestration.md` đặt trần 4 phiên song
+song với giả định mỗi phiên có **browser context riêng**. Máy này chỉ có một server
+playwright MCP, tức là **một trình duyệt, một profile** — hai phiên chạy cùng lúc sẽ dùng
+chung `localStorage` của cùng một origin. Với sản phẩm này thì đó không phải bất tiện, đó là
+hỏng hẳn: RR-04 và RR-05 **đọc chính `localStorage` đó** làm điều kiện, nên một phiên khác
+ghi đè lên giữa chừng sẽ tạo ra phát hiện giả. Đổi lấy thời gian, không đổi phạm vi — vẫn đủ
+8 phiên.
+
+Thứ tự trên được xếp để **mọi phụ thuộc tự thoả mãn**: phiên 3 nối thẳng vào phiên 2 (đúng
+điều kiện của RR-04, và miễn được một bước dựng trạng thái), phiên 7 chạy sau phiên 5 (cần
+seed thật). Mọi phiên khác **xoá `localStorage` + `sessionStorage` rồi tải lại** trước khi
+bắt đầu. Phiên mù A chạy đầu tiên vì đó là phiên duy nhất không được biết gì cả — chạy nó
+sau tám lần điều phối thì người điều phối đã kịp học trang này rồi.
 
 **Luật một-lần-đầu:** mỗi persona chỉ có **một** phiên vào context sạch. Ấn tượng 5 giây chỉ
 lấy được một lần cho mỗi người — cho một persona mở lại trang trong context sạch lần thứ hai

@@ -2,10 +2,32 @@
 
 > **Trả lời:** Đang làm gì, tiếp theo làm gì, và đang nợ những gì?
 > **Trạng thái:** 🟢 đủ
-> **Cập nhật:** 2026-09-04 · commit feat/v1-core
+> **Cập nhật:** 2026-09-12 · cài `ux-persona-review`
 > **Cập nhật khi:** bắt đầu/kết thúc một việc · brainstorm ra việc mới · cố ý đi đường tắt
 
 ## Đang làm
+
+**Cài skill `ux-persona-review`** (2026-09-12) — sinh bằng `ux-persona-lab` của workspace
+(`../../.claude/skills/ux-persona-lab`, `install.sh <project>`). **Chưa commit**, đang nằm
+trong working tree của `main`:
+
+- `.claude/skills/ux-persona-review/` — `lib/` (LIB_VERSION 3, copy nguyên, đừng sửa tay:
+  `--update` sẽ ghi đè), `references/red-routes.md` (6 route `live` RR-01…RR-06 + RR-07/08/09
+  `planned` vì FR-13/14/15 đang `(bỏ)`), `references/persona-rules.md`, 7 file persona.
+- `.claude/agents/ux-persona.md` + `ux-expert.md`.
+- `.gitignore` thêm `!/.claude/agents/` — trước đó `/.claude/*` nuốt mất hai file agent, nên
+  clone mới sẽ có skill mà thiếu agent. Đây là commit đầu tiên chạm `.gitignore`, nên **trả
+  luôn nợ kỹ thuật "worktree đặt ngoài repo"**: thêm dòng `.worktrees/`.
+
+Ba quyết định phải tự ra vì máy phát viết cho app có server, ghi lý do ngay trong
+`red-routes.md` và `persona-rules.md` §6: (1) `min_steps` **không** đếm nước đi trên bàn cờ,
+nước đi so với `optimalPushes` riêng; (2) bảng phân phiên chốt sẵn theo luật *mỗi persona chỉ
+một phiên vào context sạch*, vì ấn tượng 5 giây chỉ lấy được một lần; (3) lăng kính trust đổi
+câu hỏi — không có form nào để nhập email, niềm tin đặt vào con số đẩy tối ưu.
+
+Làm tiếp: khởi động lại phiên (agent không nạp nóng) → commit trên nhánh feature → `yarn dev`
+rồi gọi skill. Lần chạy đầu là 8 phiên chia 2 đợt; đợt 2 cần `seed` thật lấy từ log RR-03.
+`bash tests/cases.sh` ở máy phát: 117 passed / 0 failed (2026-09-12).
 
 **Đổi thương hiệu sang `Duck Push`** (2026-09-08). Repo GitHub đổi từ
 `web-game-sokoban` thành `web-game-duck-push`; GitHub redirect URL *repo* cũ nhưng
@@ -47,6 +69,6 @@ Hai cấu hình GitHub mà không dòng code nào trong repo bật được — 
 | Chỗ nào | Đã đánh đổi gì | Vì sao chấp nhận | Khi nào buộc phải trả |
 | --- | --- | --- | --- |
 | Quy trình, không phải code | **Bỏ bước mockup canvas** (`feature-flow` 1.2: artboard 375/768/1440). Chỉ có wireframe ASCII đã duyệt | Người dùng yêu cầu chạy thẳng không hỏi lại, mà cổng duyệt mockup theo định nghĩa cần người duyệt | Trước feature UI tiếp theo — hoặc chạy `design` skill, hoặc ghi ADR bỏ hẳn bước đó |
-| `../web-game-sokoban.worktrees/` | Worktree đặt **ngoài** repo thay vì `<repo>/.worktrees/` như quy ước workspace | Đặt trong repo thì phải thêm một dòng `.gitignore` bằng một commit trên `main`, mà `main` là nhánh cấm commit | Khi có commit hợp lệ đầu tiên chạm `.gitignore` trên một nhánh feature |
+| ~~`../web-game-sokoban.worktrees/`~~ | ~~Worktree đặt **ngoài** repo~~ | **Đã trả 2026-09-12** — `.gitignore` có `.worktrees/`, worktree từ nay đặt trong repo | — |
 | `vitest.config.ts` | Vite cảnh báo config dùng cú pháp ESM trong file nạp kiểu CommonJS | Chỉ là cảnh báo; sửa bằng `"type": "module"` sẽ kéo theo `next.config.ts` và `postcss.config.mjs` | Khi nâng Vite lên bản đặt `configLoader: "native"` làm mặc định |
 | `src/game/levels/pack.test.ts` | Bộ kiểm pack mất ~2 phút, phần lớn ở bậc `expert` | Nó là thứ duy nhất chặn một pack có số liệu sai (bất biến #17); cắt nó đi là mất luôn cổng đó | Khi CI chậm tới mức cản việc, chia bậc `expert` sang một job riêng thay vì giảm phạm vi kiểm |

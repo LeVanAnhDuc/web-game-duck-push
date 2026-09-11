@@ -15,9 +15,13 @@ next-env.d.ts
 test-results/
 playwright-report/
 
+# Worktree cua feature — dat trong repo theo quy uoc workspace
+.worktrees/
+
 # --- Claude Code: theo doi config + skills, bo qua worktrees/doc-state ---
 /.claude/*
 !/.claude/CLAUDE.md
 !/.claude/settings.local.json
 !/.claude/skills/
 !/.claude/scripts/
+!/.claude/agents/

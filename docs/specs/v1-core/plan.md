@@ -58,7 +58,7 @@ Mục 7.4 mở rộng so với kế hoạch ban đầu: ngoài workflow deploy c
 pull request) và `release.yml` + hai script phát hành, chép từ `web-game-tetris` và
 sửa cho Yarn + Next static export — ADR-0006.
 
-- [x] 7.1 `yarn tsc --noEmit`, `yarn lint`, `yarn build` sạch
+- [x] 7.1 `pnpm exec tsc --noEmit`, `pnpm lint`, `pnpm build` sạch
 - [x] 7.2 E2E: thắng một màn chỉ bằng bàn phím; undo; kỷ lục sống qua reload; bàn không cuộn
 - [x] 7.3 Chụp màn hình 375 / 768 / 1024 / 1440, sáng và tối
 - [x] 7.4 Workflow GitHub Pages

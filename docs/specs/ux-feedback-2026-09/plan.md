@@ -48,10 +48,10 @@ Thiết kế: [`design.md`](design.md) · Nguồn: [`../../ux-reviews/2026-09-12
 
 ## Kiểm
 
-- [x] `yarn typecheck`
-- [x] `yarn lint`
-- [x] `yarn test` — gồm `pack.test.ts` chạy lại solver trên cả 65 màn
-- [x] `yarn test:e2e`
+- [x] `pnpm typecheck`
+- [x] `pnpm lint`
+- [x] `pnpm test` — gồm `pack.test.ts` chạy lại solver trên cả 65 màn
+- [x] `pnpm test:e2e`
 - [x] Nhìn app thật ở 375 / 768 / 1024 / 1440 (`feature-flow` §5)
 
 ## Cái cố ý KHÔNG làm

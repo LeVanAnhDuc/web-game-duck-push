@@ -1,8 +1,8 @@
 /**
  * Sinh pack màn chiến dịch.
  *
- *   yarn levels:generate            — sinh cả bốn bậc với seed gốc mặc định
- *   yarn levels:generate hard 5     — sinh lại riêng một bậc với 5 màn
+ *   pnpm levels:generate            — sinh cả bốn bậc với seed gốc mặc định
+ *   pnpm levels:generate hard 5     — sinh lại riêng một bậc với 5 màn
  *
  * Chạy bằng Node, ngoài trình duyệt, nên solver được cấp ngân sách rộng hơn hẳn lúc
  * chơi. Kết quả ghi vào `src/game/levels/data/*.json` và **commit vào repo** — pack là

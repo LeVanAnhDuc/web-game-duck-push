@@ -21,7 +21,7 @@ server, không có datastore, không có tài khoản** (xem Non-Goals). Các ng
 | NFR-PERF-06 | Sinh một màn ngẫu nhiên: **p95 ≤ 1.5 giây**, trần cứng 2.5 giây rồi hạ chuẩn | đo trong Worker, ghi lại `attempts` và thời gian |
 | NFR-PERF-07 | Solver **luôn** chạy trong ngân sách `maxNodes` + `maxMillis`. Không có đường nào gọi solver không ngân sách | review code + test có ngân sách nhỏ |
 | NFR-PERF-08 | Sinh màn **không bao giờ chạy trên luồng chính** — luôn trong Web Worker | review code + e2e kiểm trang vẫn phản hồi khi đang sinh |
-| NFR-PERF-09 | JS tải lần đầu ≤ **200KB** sau gzip. Pack màn tải theo bậc, không tải cả bốn | `yarn build` in ra kích thước route |
+| NFR-PERF-09 | JS tải lần đầu ≤ **200KB** sau gzip. Pack màn tải theo bậc, không tải cả bốn | `pnpm build` in ra kích thước route |
 
 ## Security
 
@@ -31,7 +31,7 @@ server, không có datastore, không có tài khoản** (xem Non-Goals). Các ng
 | NFR-SEC-02 | ~~Không log PII~~ | **(bỏ)** — không thu thập dữ liệu cá nhân nào |
 | NFR-SEC-03 | ~~Rate limit đăng nhập~~ | **(bỏ)** — không có đăng nhập |
 | NFR-SEC-04 | Secret chỉ đọc từ biến môi trường, không hardcode, không commit | grep + review |
-| NFR-SEC-05 | Dependency không có lỗ hổng mức high trở lên | `yarn audit` trong CI |
+| NFR-SEC-05 | Dependency không có lỗ hổng mức high trở lên | job `dependency-review` trong CI |
 | NFR-SEC-06 | ~~Lỗi trả về không lộ stack trace~~ | **(bỏ)** — không có phản hồi từ server |
 | NFR-SEC-07 | Mọi dữ liệu đọc từ `localStorage` hoặc từ URL đều được **kiểm trước khi dùng**. Dữ liệu hỏng thì bỏ qua và về mặc định, không bao giờ ném lỗi ra UI | test với dữ liệu sửa tay |
 

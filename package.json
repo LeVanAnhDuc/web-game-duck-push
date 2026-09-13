@@ -2,6 +2,7 @@
   "name": "web-game-duck-push",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.32.1",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -14,8 +15,8 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "levels:generate": "tsx scripts/generate-pack.ts",
-    "release:next": "npx --yes git-cliff@2.13.1 --bumped-version",
-    "release:notes": "npx --yes git-cliff@2.13.1 --unreleased --tag $(npx --yes git-cliff@2.13.1 --bumped-version) --strip all"
+    "release:next": "pnpm dlx git-cliff@2.13.1 --bumped-version",
+    "release:notes": "pnpm dlx git-cliff@2.13.1 --unreleased --tag $(pnpm dlx git-cliff@2.13.1 --bumped-version) --strip all"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -40,5 +41,8 @@
     "tsx": "^4.19.2",
     "typescript": "^5.9.0",
     "vitest": "^4.1.11"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild", "unrs-resolver"]
   }
 }

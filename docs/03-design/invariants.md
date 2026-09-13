@@ -19,7 +19,7 @@ Bản mặc định lúc scaffold viết cho app có server và migration. Cái 
 | 7 | ~~Migration chỉ tiến~~ | **(bỏ)** — thay bằng #17 |
 | 8 | ~~Thứ tự middleware auth → validate → handler~~ | **(bỏ)** |
 | 9 | ~~Không tin `id` từ client~~ | **(bỏ)** — mọi thứ đều là client |
-| 10 | **`src/game/core/` không import React, không đụng DOM, không đọc `window`** | Cùng dòng code phải chạy ở ba nơi: script Node lúc build, Web Worker, và Vitest. Lỡ import một thứ có `window` thì script sinh pack chết ở bước build — nhưng chỉ chết trên CI, không chết ở máy đang chạy `yarn dev` |
+| 10 | **`src/game/core/` không import React, không đụng DOM, không đọc `window`** | Cùng dòng code phải chạy ở ba nơi: script Node lúc build, Web Worker, và Vitest. Lỡ import một thứ có `window` thì script sinh pack chết ở bước build — nhưng chỉ chết trên CI, không chết ở máy đang chạy `pnpm dev` |
 | 11 | **`LevelState` bất biến.** `step()` trả trạng thái mới, không sửa tại chỗ | Lịch sử hoàn tác trỏ vào các trạng thái cũ. Sửa tại chỗ thì undo "thành công" nhưng trả về đúng cái trạng thái hiện tại — nhìn như treo, test đơn lẻ vẫn xanh |
 | 12 | **`LevelState.boxes` luôn sắp tăng dần** | Solver chuẩn hoá trạng thái bằng cách nối vị trí các thùng. Mất tính sắp thì hai trạng thái giống hệt nhau băm ra hai khoá — solver vẫn ra lời giải đúng, chỉ chậm gấp nhiều lần và thỉnh thoảng timeout không rõ lý do |
 | 13 | **Undo là lùi lịch sử, không phải đi ngược** | Trong Sokoban, kéo không phải nghịch đảo của đẩy. Cài undo bằng cách "đi ngược lại" chạy đúng ở mọi nước không đẩy rồi sai ngay nước đẩy đầu tiên — và sai theo kiểu bàn cờ vẫn hợp lệ nên không ai nhận ra ngay |

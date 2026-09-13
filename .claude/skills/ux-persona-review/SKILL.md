@@ -10,8 +10,8 @@ description: Use when you want to know how a real stranger experiences Duck Push
 - Thư mục: `D:/Learn/web-app-ecosystem/web-game/web-game-sokoban`
 - Port: **3000** — `http://localhost:3000` (dev) hoặc `http://127.0.0.1:3000` (bản build tĩnh).
   Không có port server: game chạy hoàn toàn phía client.
-- Bật app: `yarn install && yarn dev` tại `D:/Learn/web-app-ecosystem/web-game/web-game-sokoban`.
-  Muốn chạy trên đúng bản sẽ lên Pages thì `yarn build && yarn serve -s out -l 3000`.
+- Bật app: `pnpm install && pnpm dev` tại `D:/Learn/web-app-ecosystem/web-game/web-game-sokoban`.
+  Muốn chạy trên đúng bản sẽ lên Pages thì `pnpm build && pnpm exec serve -s out -l 3000`.
   **Đừng đặt `GITHUB_PAGES=true` ở máy** — nó thêm basePath `/web-game-duck-push` và làm hỏng đường dẫn tài nguyên khi chạy local.
 - Dấu hiệu nhận biết đúng app: tiêu đề tab là **Duck Push**, nhưng tiêu đề trên trang là chữ
   **`SOKOBAN`** giãn chữ ở góc trái, cạnh nút đổi sáng/tối. Dưới đó là nút chính

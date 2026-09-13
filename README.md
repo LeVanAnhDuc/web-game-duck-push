@@ -76,26 +76,26 @@ whether a level can be done better.
 ## Commands
 
 ```bash
-yarn install
-yarn dev          # http://localhost:3000
+pnpm install
+pnpm dev          # http://localhost:3000
 ```
 
 No environment variables are needed to run or develop — see [`.env.example`](.env.example).
 
 ```bash
-yarn test         # unit tests, including re-solving every committed level
-yarn test:e2e     # Playwright, against the real static build
-yarn typecheck
-yarn lint
-yarn build        # static export into out/
+pnpm test         # unit tests, including re-solving every committed level
+pnpm test:e2e     # Playwright, against the real static build
+pnpm typecheck
+pnpm lint
+pnpm build        # static export into out/
 ```
 
 Regenerating the level packs (they are committed, so this is only needed when the
 generator changes):
 
 ```bash
-yarn levels:generate            # all four tiers
-yarn levels:generate hard 5     # just five hard levels
+pnpm levels:generate            # all four tiers
+pnpm levels:generate hard 5     # just five hard levels
 ```
 
 The generator is deterministic: the same root seed produces the same pack, which is why
@@ -146,8 +146,10 @@ gh api -X POST repos/LeVanAnhDuc/web-game-duck-push/pages -f build_type=workflow
 **Dependabot has to be enabled once too**, under Settings → Advanced Security. CI reviews
 the dependencies a pull request *adds*; a vulnerability newly disclosed against something
 already here arrives as a Dependabot alert and its fix PR instead. There is deliberately
-no `yarn audit` step — yarn 1's audit endpoint no longer answers, so that step passes
-green without having checked anything.
+no audit step: the original reason was that yarn 1's audit endpoint no longer answered, so
+such a step passed green without having checked anything. `pnpm audit` does answer, but the
+dependency review stays — it reports the packages a pull request *adds*, which points at the
+change that caused the problem rather than re-listing the whole tree on every run.
 
 **The version comes from your commit subjects**, so they have to follow Conventional
 Commits. The whole range since the previous tag is scanned, so one `feat:` anywhere in a
@@ -180,8 +182,8 @@ when a push was direct commits. Both scripts run locally, so you can see what a 
 will say before it says it:
 
 ```bash
-yarn release:next     # which tag the next release would get
-yarn release:notes    # what its notes would say
+pnpm release:next     # which tag the next release would get
+pnpm release:notes    # what its notes would say
 ```
 
 **The README is not automated.** Any `feat:` that changes what a player can do must

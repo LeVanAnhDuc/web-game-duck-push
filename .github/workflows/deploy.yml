@@ -19,33 +19,36 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: yarn
-      - run: yarn install --frozen-lockfile
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
 
       # Lint chay o day chu khong chi trong ci.yml: `build` bat duoc loi kieu
       # nhung khong bat vi pham lint, va mot push thang vao `main` khong di
       # qua pull request.
-      - run: yarn lint
-      - run: yarn typecheck
+      - run: pnpm lint
+      - run: pnpm typecheck
 
       # The pack suite here too: it is the one check standing between a stale
       # level pack and a deploy, and it costs less than a wrong `optimalPushes`
       # sitting live on the HUD.
-      - run: yarn test
+      - run: pnpm test
 
       # No browser suite in this job. Pull requests run it (ci.yml), and a merge
       # commit carries the same tree the pull request tested -- running it twice
       # would double the slowest job in the pipeline to re-prove the same thing.
-      - run: yarn build
+      - run: pnpm build
         env:
           # Unlike the sibling Vite games, which set `base: './'` and need no env
           # var, Next resolves basePath and assetPrefix at build time. GitHub Pages
           # serves this repo under /web-game-duck-push, so the deploy build -- and
           # only the deploy build -- has to be told. Setting it locally would break
-          # `yarn dev`. See .env.example.
+          # `pnpm dev`. See .env.example.
           GITHUB_PAGES: "true"
 
       # Next puts every asset under _next/, and anything starting with an

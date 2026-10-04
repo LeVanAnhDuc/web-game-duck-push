@@ -26,3 +26,6 @@ playwright-report/
 !/.claude/skills/
 !/.claude/scripts/
 !/.claude/agents/
+
+# e2e: hai bản build tĩnh (cờ tắt / cờ bật)
+.e2e/

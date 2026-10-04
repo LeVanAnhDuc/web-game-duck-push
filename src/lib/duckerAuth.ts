@@ -66,6 +66,7 @@ export async function startLogin(config: DuckerConfig): Promise<void> {
     url.searchParams.set("code_challenge_method", "S256");
     window.location.assign(url.toString());
   } catch (error) {
+    clearPending(); // đừng để verifier mồ côi nếu hỏng sau khi đã cất
     starting = false;
     throw error;
   }
@@ -108,6 +109,12 @@ export function consumeCallback(): CallbackResult | null {
 
 let captured: CallbackResult | null = null;
 let didCapture = false;
+/** URL sạch sau khi bắt callback; null nếu không có callback. */
+let settledUrl: string | null = null;
+
+function currentUrl(): string {
+  return window.location.pathname + window.location.search + window.location.hash;
+}
 
 /** Chạy một lần khi module nạp trên trình duyệt, trước mọi code game đọc URL. */
 export function captureCallback(): void {
@@ -121,6 +128,25 @@ export function captureCallback(): void {
       // never let a bad returnTo blank the game at load
     }
   }
+  if (captured) settledUrl = currentUrl();
+}
+
+/**
+ * Sau hydrate, app router của Next ghi lại URL lúc hydrate (còn ?code&state) vào history,
+ * có thể đè mất bước dọn ở captureCallback. Gọi lại khi mount để đặt về URL sạch,
+ * không thì F5 sẽ đem một code đã dùng đi đổi lần nữa và tham số game có thể bị đè.
+ */
+export function settleCallbackUrl(): void {
+  if (settledUrl === null) return;
+  // Một lần duy nhất: remount sau này (điều hướng đi rồi về) không được ghi URL cũ đè sau lưng Next.
+  const target = settledUrl;
+  settledUrl = null;
+  if (currentUrl() === target) return;
+  try {
+    window.history.replaceState(window.history.state, "", target);
+  } catch {
+    // best effort
+  }
 }
 
 export function capturedCallback(): CallbackResult | null {
@@ -131,6 +157,7 @@ export function capturedCallback(): CallbackResult | null {
 export function resetCaptureForTests(): void {
   captured = null;
   didCapture = false;
+  settledUrl = null;
   starting = false;
 }
 

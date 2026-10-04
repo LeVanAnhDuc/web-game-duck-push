@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   captureCallback,
+  settleCallbackUrl,
   consumeCallback,
   resetCaptureForTests,
   startLogin
@@ -89,6 +90,41 @@ describe("captureCallback", () => {
   });
 });
 
+describe("settleCallbackUrl", () => {
+  beforeEach(() => {
+    sessionStorage.clear();
+    resetCaptureForTests();
+  });
+
+  it("restores the clean URL when the router re-polluted it after capture", () => {
+    sessionStorage.setItem("ducker.pkce", JSON.stringify({ state: "s1", verifier: "v1", returnTo: "/?level=3&d=easy" }));
+    window.history.replaceState(null, "", "/?code=c1&state=s1");
+    captureCallback();
+    window.history.replaceState(null, "", "/?code=c1&state=s1");
+    settleCallbackUrl();
+    expect(window.location.search).toBe("?level=3&d=easy");
+  });
+
+  it("is one-shot: a second call does nothing even if the URL changed meanwhile", () => {
+    sessionStorage.setItem("ducker.pkce", JSON.stringify({ state: "s1", verifier: "v1", returnTo: "/?level=3" }));
+    window.history.replaceState(null, "", "/?code=c1&state=s1");
+    captureCallback();
+    window.history.replaceState(null, "", "/?code=c1&state=s1");
+    settleCallbackUrl();
+    window.history.replaceState(null, "", "/?level=7");
+    settleCallbackUrl();
+    expect(window.location.search).toBe("?level=7");
+  });
+
+  it("is a no-op when there was no callback", () => {
+    window.history.replaceState(null, "", "/?level=3");
+    captureCallback();
+    window.history.replaceState(null, "", "/?level=9");
+    settleCallbackUrl();
+    expect(window.location.search).toBe("?level=9");
+  });
+});
+
 describe("startLogin", () => {
   const assign = vi.fn();
   beforeEach(() => {
@@ -131,6 +167,16 @@ describe("startLogin", () => {
     expect(assign).not.toHaveBeenCalled();
     vi.stubGlobal("sessionStorage", real);
     // the guard was released: a later click still works
+    await startLogin(config);
+    expect(assign).toHaveBeenCalledOnce();
+  });
+
+  it("removes the pending entry and releases the guard when the start fails after storing it", async () => {
+    const spy = vi.spyOn(crypto.subtle, "digest").mockRejectedValueOnce(new Error("boom"));
+    await expect(startLogin(config)).rejects.toThrow("boom");
+    expect(sessionStorage.getItem("ducker.pkce")).toBeNull();
+    expect(assign).not.toHaveBeenCalled();
+    spy.mockRestore();
     await startLogin(config);
     expect(assign).toHaveBeenCalledOnce();
   });

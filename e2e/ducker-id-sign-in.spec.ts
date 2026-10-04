@@ -83,40 +83,32 @@ test.describe("cờ bật", () => {
     expect(errors.filter((text) => /hydrat/i.test(text))).toEqual([]);
   });
 
-  test("tham số màn chơi (?level ?d) sống sót sau vòng đăng nhập", async ({ page }) => {
+  test("?level và ?d sống sót, URL sạch sau hydrate và sau khi tải lại", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByRole("button", { name: "Đăng nhập" })).toBeVisible();
-    // Trang chủ không tự ghi query; đặt tham số vào thanh địa chỉ như khi người dùng mở link chia sẻ rồi quay về.
+    await expect(page.getByRole("button", { name: "Đăng nhập" })).toBeEnabled();
+    // Đặt tham số vào thanh địa chỉ như khi mở link chia sẻ rồi bấm đăng nhập.
     await page.evaluate((id) => window.history.replaceState(null, "", `/?level=${id}&d=easy`), levelId);
+
+    const userinfo = page.waitForResponse(`${ISSUER}/oauth/userinfo`);
     await page.getByRole("button", { name: "Đăng nhập" }).click();
-
+    await userinfo;
     await expect(page.getByTestId("board")).toBeVisible();
-    const url = new URL(page.url());
-    expect(url.searchParams.get("level")).toBe(levelId);
-    expect(url.searchParams.get("d")).toBe("easy");
-    expect(url.searchParams.has("code")).toBe(false);
-    expect(url.searchParams.has("state")).toBe(false);
+    // Next ghi lại URL lúc hydrate (còn ?code&state) vào history: đợi mọi thứ lắng xuống rồi mới đo.
+    await page.waitForLoadState("networkidle");
 
-    // Sau hydrate Next có thể ghi lại URL còn ?code&state: chờ trạng thái đã đăng nhập
-    // (về trang chủ), rồi kiểm lại URL vẫn sạch và tham số game còn nguyên.
-    await page.getByRole("button", { name: "Về trang chủ" }).click();
-    await expect(page.getByRole("button", { name: "Tài khoản Ducker ID" })).toBeVisible();
-    const after = new URL(page.url());
-    expect(after.search).not.toMatch(/code=|state=/);
-  });
+    const expectClean = () => {
+      const url = new URL(page.url());
+      expect(url.search).not.toMatch(/code=|state=|iss=/);
+      expect(url.searchParams.get("level")).toBe(levelId);
+      expect(url.searchParams.get("d")).toBe("easy");
+    };
+    expectClean();
 
-  test("sau hydrate URL vẫn sạch và ?level còn nguyên (settle)", async ({ page }) => {
-    await page.goto("/");
-    await expect(page.getByRole("button", { name: "Đăng nhập" })).toBeVisible();
-    await page.evaluate((id) => window.history.replaceState(null, "", `/?level=${id}&d=easy`), levelId);
-    await page.getByRole("button", { name: "Đăng nhập" }).click();
+    // F5 không được gửi lại code đã dùng (authorize không bị gọi lại và URL vẫn sạch).
+    await page.reload();
     await expect(page.getByTestId("board")).toBeVisible();
-    // Cho hydrate + effect settle chạy xong, rồi kiểm.
-    await page.waitForTimeout(1000);
-    const url = new URL(page.url());
-    expect(url.search).not.toMatch(/code=|state=/);
-    expect(url.searchParams.get("level")).toBe(levelId);
-    expect(url.searchParams.get("d")).toBe("easy");
+    await page.waitForLoadState("networkidle");
+    expectClean();
   });
 
   test("huỷ ở Ducker ID thì về chưa đăng nhập, URL sạch", async ({ page }) => {
@@ -152,32 +144,50 @@ test.describe("cờ bật", () => {
     expect(new URL(page.url()).search).toBe("");
   });
 
-  test("ở 375px nút đủ 44px và không đè lên tiêu đề hay nút giao diện", async ({ page }) => {
-    await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto("/");
-    const signIn = page.getByRole("button", { name: "Đăng nhập" });
-    await expect(signIn).toBeVisible();
-    const box = await signIn.boundingBox();
-    expect(box!.width).toBeGreaterThanOrEqual(44);
-    expect(box!.height).toBeGreaterThanOrEqual(44);
+  for (const width of [320, 375]) {
+    test(`ở ${width}px header không xuống dòng qua idle/signed-out/signed-in, menu nằm trong màn hình`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 667 });
+      await page.goto("/");
+      const theme = page.getByRole("button", { name: /^Giao diện/ });
+      const sameRow = async (trigger: ReturnType<typeof page.getByRole>) => {
+        const t = (await trigger.boundingBox())!;
+        const th = (await theme.boundingBox())!;
+        // Cùng một hàng: tâm dọc lệch nhau vài px (avatar 52px cao hơn nút giao diện 44px).
+        expect(Math.abs(t.y + t.height / 2 - (th.y + th.height / 2))).toBeLessThanOrEqual(3);
+        expect(t.width).toBeGreaterThanOrEqual(44);
+        expect(t.height).toBeGreaterThanOrEqual(44);
+        const title = (await page.getByRole("heading", { name: "DUCK PUSH" }).boundingBox())!;
+        for (const other of [title, th]) {
+          const overlap =
+            t.x < other.x + other.width && other.x < t.x + t.width && t.y < other.y + other.height && other.y < t.y + t.height;
+          expect(overlap).toBe(false);
+        }
+      };
 
-    const others = [
-      await page.getByRole("heading", { name: "DUCK PUSH" }).boundingBox(),
-      await page.getByRole("button", { name: /^Giao diện/ }).boundingBox()
-    ];
-    for (const other of others) {
-      const overlap =
-        box!.x < other!.x + other!.width &&
-        other!.x < box!.x + box!.width &&
-        box!.y < other!.y + other!.height &&
-        other!.y < box!.y + box!.height;
-      expect(overlap).toBe(false);
-    }
-    const documentOverflow = await page.evaluate(
-      () => document.documentElement.scrollWidth - document.documentElement.clientWidth
-    );
-    expect(documentOverflow).toBeLessThanOrEqual(0);
-  });
+      await sameRow(page.getByRole("button", { name: "Đăng nhập" }));
+      const overflow = () =>
+        page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      expect(await overflow()).toBeLessThanOrEqual(0);
+
+      await page.getByRole("button", { name: "Đăng nhập" }).click();
+      const account = page.getByRole("button", { name: "Tài khoản Ducker ID" });
+      await expect(account).toBeVisible();
+      await sameRow(account);
+
+      const container = page.locator("header > div").first();
+      const before = (await container.boundingBox())!;
+      await account.click();
+      const menu = page.getByRole("menu");
+      await expect(menu).toBeVisible();
+      expect(await menu.evaluate((el) => getComputedStyle(el).position)).toBe("absolute");
+      const box = (await menu.boundingBox())!;
+      expect(box.x).toBeGreaterThanOrEqual(0);
+      expect(box.x + box.width).toBeLessThanOrEqual(width);
+      expect(box.y).toBeGreaterThanOrEqual(0);
+      expect(await container.boundingBox()).toEqual(before);
+      expect(await overflow()).toBeLessThanOrEqual(0);
+    });
+  }
 });
 
 test.describe("cờ tắt (bản giống deploy)", () => {

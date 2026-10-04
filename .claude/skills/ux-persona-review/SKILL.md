@@ -12,7 +12,7 @@ description: Use when you want to know how a real stranger experiences Duck Push
   Không có port server: game chạy hoàn toàn phía client.
 - Bật app: `pnpm install && pnpm dev` tại `D:/Learn/web-app-ecosystem/web-game/web-game-sokoban`.
   Muốn chạy trên đúng bản sẽ lên Pages thì `pnpm build && pnpm exec serve -s out -l 3000`.
-  **Đừng đặt `GITHUB_PAGES=true` ở máy** — nó thêm basePath `/web-game-duck-push` và làm hỏng đường dẫn tài nguyên khi chạy local.
+  **Đừng đặt `NEXT_PUBLIC_BASE_PATH=/web-game-duck-push` ở máy** — nó thêm basePath và làm hỏng đường dẫn tài nguyên khi chạy local.
 - Dấu hiệu nhận biết đúng app: tiêu đề tab là **Duck Push**, nhưng tiêu đề trên trang là chữ
   **`SOKOBAN`** giãn chữ ở góc trái, cạnh nút đổi sáng/tối. Dưới đó là nút chính
   **`Màn ngẫu nhiên · Dễ`** và mục **`Chiến dịch`** với bốn tab `Dễ · Vừa · Khó · Rất khó`.

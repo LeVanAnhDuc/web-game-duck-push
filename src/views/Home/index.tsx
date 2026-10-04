@@ -15,6 +15,7 @@ import { CampaignGrid } from "./mains/CampaignGrid";
 import { ResumeCard } from "./mains/ResumeCard";
 import { DifficultyTabs } from "./components/DifficultyTabs";
 import { RandomLevelButton } from "./components/RandomLevelButton";
+import { AccountButton } from "./components/AccountButton";
 import { ThemeToggle } from "./components/ThemeToggle";
 
 /**
@@ -41,9 +42,13 @@ export function Home({
   return (
     <main className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 pt-4 pb-12">
       <header className="flex flex-col gap-2">
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
           <h1 className="screen-title tracking-[0.06em]">DUCK PUSH</h1>
-          <ThemeToggle />
+          {/* `relative`: the account menu anchors to this row, so at 375px it stays inside the viewport. */}
+          <div className="relative ml-auto flex items-center gap-1">
+            <AccountButton />
+            <ThemeToggle />
+          </div>
         </div>
         {/*
           0/6 người trong lượt review 2026-09 đọc ra được sản phẩm này khác gì (F-02):

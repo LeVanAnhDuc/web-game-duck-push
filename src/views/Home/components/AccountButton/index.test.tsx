@@ -157,6 +157,32 @@ describe("AccountButton", () => {
     expect(document.activeElement).toBe(out);
   });
 
+  it("keeps menu keys away from a bubble-phase window listener (the game) only while open", () => {
+    auth.value = signedIn;
+    mount();
+    const seen: string[] = [];
+    const gameListener = (event: KeyboardEvent) => seen.push(event.key);
+    window.addEventListener("keydown", gameListener);
+    try {
+      press(document.body, { key: "ArrowUp" });
+      expect(seen).toEqual(["ArrowUp"]); // closed: the game gets its keys
+
+      seen.length = 0;
+      const trigger = openMenu();
+      press(document.body, { key: "ArrowUp" });
+      press(document.body, { key: "ArrowDown" });
+      press(document.body, { key: "Escape" });
+      expect(seen).toEqual([]);
+      expect(trigger.getAttribute("aria-expanded")).toBe("false");
+
+      press(document.body, { key: "ArrowUp" });
+      press(document.body, { key: "Escape" });
+      expect(seen).toEqual(["ArrowUp", "Escape"]); // closed again
+    } finally {
+      window.removeEventListener("keydown", gameListener);
+    }
+  });
+
   it("closes on Tab without trapping focus", () => {
     auth.value = signedIn;
     mount();

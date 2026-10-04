@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, type FocusEvent, type KeyboardEvent, type RefObject } from "react";
+import { useCallback, useEffect, useState, type FocusEvent, type RefObject } from "react";
 
 /**
  * Hành vi của menu tài khoản — không có kiểu dáng.
@@ -28,27 +28,19 @@ export function useAccountMenu(
 
   useEffect(() => {
     if (!open) return;
-    const onKey = (event: globalThis.KeyboardEvent) => {
-      if (event.key === "Escape") close(true);
-    };
-    const onPointer = (event: PointerEvent) => {
-      const target = event.target as Node;
-      if (!menuRef.current?.contains(target) && !triggerRef.current?.contains(target)) close(false);
-    };
-    document.addEventListener("keydown", onKey);
-    document.addEventListener("pointerdown", onPointer);
-    menuRef.current?.querySelector<HTMLElement>('[role="menuitem"]')?.focus();
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.removeEventListener("pointerdown", onPointer);
-    };
-  }, [open, close, triggerRef, menuRef]);
-
-  const onMenuKeyDown = useCallback(
-    (event: KeyboardEvent<HTMLElement>) => {
+    // Phase CAPTURE trên window, và chỉ khi menu đang mở: game nghe phím ở window (bubble),
+    // nên nếu menu nghe ở document thì ArrowUp / Escape… vẫn lọt xuống game phía sau menu.
+    // Mọi phím menu xử lý đều stopPropagation; menu đóng thì game nhận phím y như cũ.
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.stopPropagation();
+        close(true);
+        return;
+      }
       if (event.key === "Tab") {
         // Đưa tiêu điểm về nút mở TRƯỚC khi đóng: phần tử đang focus bị gỡ khỏi DOM thì
         // Tab sẽ bắt đầu lại từ đầu trang. Từ nút mở, Tab/Shift+Tab đi tiếp đúng chỗ.
+        event.stopPropagation();
         triggerRef.current?.focus();
         setOpen(false);
         return;
@@ -62,11 +54,22 @@ export function useAccountMenu(
       else if (event.key === "Home") next = 0;
       else if (event.key === "End") next = items.length - 1;
       else return;
+      event.stopPropagation();
       event.preventDefault();
       items[next]?.focus();
-    },
-    [triggerRef, menuRef]
-  );
+    };
+    const onPointer = (event: PointerEvent) => {
+      const target = event.target as Node;
+      if (!menuRef.current?.contains(target) && !triggerRef.current?.contains(target)) close(false);
+    };
+    window.addEventListener("keydown", onKey, true);
+    document.addEventListener("pointerdown", onPointer);
+    menuRef.current?.querySelector<HTMLElement>('[role="menuitem"]')?.focus();
+    return () => {
+      window.removeEventListener("keydown", onKey, true);
+      document.removeEventListener("pointerdown", onPointer);
+    };
+  }, [open, close, triggerRef, menuRef]);
 
   const onMenuBlur = useCallback(
     (event: FocusEvent<HTMLElement>) => {
@@ -78,5 +81,5 @@ export function useAccountMenu(
 
   const toggle = useCallback(() => setOpen((value) => !value), []);
 
-  return { open, toggle, close, onMenuKeyDown, onMenuBlur };
+  return { open, toggle, close, onMenuBlur };
 }

@@ -102,7 +102,6 @@ export function AccountButton() {
           ref={menuRef}
           role="menu"
           aria-label={STRINGS.menuLabel}
-          onKeyDown={menu.onMenuKeyDown}
           onBlur={menu.onMenuBlur}
           className="card overlay-in absolute top-full right-0 z-40 mt-2 flex w-64 max-w-[calc(100vw-2rem)] flex-col gap-1 p-2"
         >

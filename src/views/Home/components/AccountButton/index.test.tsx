@@ -71,6 +71,31 @@ describe("AccountButton", () => {
     expect(base.signIn).toHaveBeenCalledOnce();
   });
 
+  it("renders a disabled, same-sized placeholder while idle (before hydration)", () => {
+    auth.value = { ...base, status: "idle", profile: null };
+    mount();
+    expect((byName("Đăng nhập") as HTMLButtonElement).disabled).toBe(true);
+  });
+
+  it("falls back to the initial when the avatar image fails to load", () => {
+    auth.value = { ...signedIn, profile: { ...signedIn.profile, picture: "https://img.test/bad.png" } };
+    mount();
+    const img = container.querySelector("img")!;
+    expect(img.getAttribute("referrerpolicy")).toBe("no-referrer");
+    act(() => {
+      img.dispatchEvent(new Event("error"));
+    });
+    expect(container.querySelector("img")).toBeNull();
+    expect(byName("Tài khoản Ducker ID")!.textContent).toBe("L");
+  });
+
+  it("marks the identity block role=none inside the menu", () => {
+    auth.value = signedIn;
+    mount();
+    openMenu();
+    expect(container.querySelector('[role="menu"] [role="none"]')?.textContent).toContain("Lê Văn Anh Đức");
+  });
+
   it("disables the button while signing in", () => {
     auth.value = { ...base, status: "loading", profile: null };
     mount();

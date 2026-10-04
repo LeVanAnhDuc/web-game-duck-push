@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { LogIn } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/Button";
 import { useAccountMenu } from "@/hooks/useAccountMenu";
 import { useDuckerAuth } from "@/hooks/useDuckerAuth";
@@ -34,6 +35,7 @@ export function AccountButton() {
   const menu = useAccountMenu(triggerRef, menuRef);
   const signInRef = useRef<HTMLButtonElement>(null);
   const focusSignInNext = useRef(false);
+  const [failedPicture, setFailedPicture] = useState<string | null>(null);
 
   const signedIn = auth.status === "signed-in" && auth.profile !== null;
 
@@ -49,16 +51,22 @@ export function AccountButton() {
   if (!auth.enabled) return null;
 
   if (!signedIn || auth.profile === null) {
+    // `idle` (HTML tĩnh + lần vẽ đầu) cũng vẽ đúng nút này nhưng khoá, cùng kích thước:
+    // không bấm được trước khi hydrate và header không xê dịch qua idle → loading → signed-out.
+    const loading = auth.status === "loading";
     return (
       <Button
         ref={signInRef}
         variant="ghost"
-        pending={auth.status === "loading"}
+        pending={loading}
+        disabled={auth.status === "idle"}
         onClick={auth.signIn}
-        className="cursor-pointer"
+        className="flex-none cursor-pointer"
       >
-        <span className="text-[14px] font-medium whitespace-nowrap">
-          {auth.status === "loading" ? STRINGS.signingIn : STRINGS.signIn}
+        {/* Dưới `sm` chỉ còn biểu tượng (tên truy cập vẫn là chữ, sr-only) để hàng header không xuống dòng ở 375px. */}
+        {loading ? null : <LogIn aria-hidden="true" size={20} className="sm:hidden" />}
+        <span className="sr-only text-[14px] font-medium whitespace-nowrap sm:not-sr-only">
+          {loading ? STRINGS.signingIn : STRINGS.signIn}
         </span>
       </Button>
     );
@@ -76,9 +84,9 @@ export function AccountButton() {
         aria-haspopup="menu"
         aria-expanded={menu.open}
         aria-label={STRINGS.menuLabel}
-        className="cursor-pointer"
+        className="flex-none cursor-pointer"
       >
-        {profile.picture ? (
+        {profile.picture && failedPicture !== profile.picture ? (
           // eslint-disable-next-line @next/next/no-img-element -- ảnh từ Ducker ID, static export không tối ưu ảnh
           <img
             src={profile.picture}
@@ -86,6 +94,7 @@ export function AccountButton() {
             width={32}
             height={32}
             referrerPolicy="no-referrer"
+            onError={() => setFailedPicture(profile.picture ?? null)}
             className="h-8 w-8 rounded-full object-cover"
           />
         ) : (
@@ -105,7 +114,7 @@ export function AccountButton() {
           onBlur={menu.onMenuBlur}
           className="card overlay-in absolute top-full right-0 z-40 mt-2 flex w-64 max-w-[calc(100vw-2rem)] flex-col gap-1 p-2"
         >
-          <div className="px-3 py-2">
+          <div role="none" className="px-3 py-2">
             {headline ? (
               <p className="truncate text-[14px] font-medium text-[var(--color-card-foreground)]">{headline}</p>
             ) : null}

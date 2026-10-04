@@ -29,11 +29,11 @@ server, không có datastore, không có tài khoản** (xem Non-Goals). Các ng
 | --- | --- | --- |
 | NFR-SEC-01 | ~~Kiểm quyền mutation ở server~~ | **(bỏ)** — không có server. Không có gì để phân quyền: mọi dữ liệu là của chính máy đó |
 | NFR-SEC-02 | ~~Không log PII~~ | **(bỏ)** — không thu thập dữ liệu cá nhân nào |
-| NFR-SEC-03 | ~~Rate limit đăng nhập~~ | **(bỏ)** — không có đăng nhập |
+| NFR-SEC-03 | ~~Rate limit đăng nhập~~ | **(bỏ)** — game không có tài khoản riêng nên không có form đăng nhập để giới hạn; đăng nhập Ducker ID tuỳ chọn (ADR-0010) do Ducker ID chịu trách nhiệm |
 | NFR-SEC-04 | Secret chỉ đọc từ biến môi trường, không hardcode, không commit | grep + review |
 | NFR-SEC-05 | Dependency không có lỗ hổng mức high trở lên | job `dependency-review` trong CI |
 | NFR-SEC-06 | ~~Lỗi trả về không lộ stack trace~~ | **(bỏ)** — không có phản hồi từ server |
-| NFR-SEC-07 | Mọi dữ liệu đọc từ `localStorage` hoặc từ URL đều được **kiểm trước khi dùng**. Dữ liệu hỏng thì bỏ qua và về mặc định, không bao giờ ném lỗi ra UI | test với dữ liệu sửa tay |
+| NFR-SEC-07 | Mọi dữ liệu đọc từ `localStorage`, từ URL hoặc từ userinfo của Ducker ID đều được **kiểm trước khi dùng**. Dữ liệu hỏng thì bỏ qua và về mặc định, không bao giờ ném lỗi ra UI | test với dữ liệu sửa tay |
 
 ## Accessibility
 
@@ -79,5 +79,5 @@ server, không có datastore, không có tài khoản** (xem Non-Goals). Các ng
 | --- | --- | --- |
 | _không có_ | — | — |
 
-Game không thu thập, không gửi đi, và không lưu bất kỳ dữ liệu cá nhân nào. Toàn bộ dữ liệu
+Game không thu thập, không gửi đi, và không lưu bất kỳ dữ liệu cá nhân nào. **Ngoại lệ có giới hạn (ADR-0010):** khi người chơi chủ động bấm "Đăng nhập" (và cờ tính năng bật), tên/email/ảnh từ Ducker ID được giữ **chỉ trong bộ nhớ** của tab; sessionStorage key `ducker.pkce` only, deleted on return; network only to the configured issuer, and to the profile picture URL it returns, only after sign-in; nothing when the flag is off. Toàn bộ dữ liệu
 là tiến độ chơi trong `localStorage` của chính máy người dùng.

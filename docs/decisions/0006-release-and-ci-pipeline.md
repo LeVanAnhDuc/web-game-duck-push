@@ -4,6 +4,8 @@
 > **Trạng thái:** accepted
 > **Liên quan:** NFR-SEC-05 · NFR-PERF-09 · bất biến #17 · ADR-0002
 
+> **Superseded in part:** biến `GITHUB_PAGES` đã được thay bằng `NEXT_PUBLIC_BASE_PATH` (ADR-0010). `deploy.yml` nay đặt `NEXT_PUBLIC_BASE_PATH`, không còn `GITHUB_PAGES=true`. Phần còn lại của quyết định này vẫn đúng.
+
 ## 1. Bối cảnh
 
 Dự án xuất HTML tĩnh và host trên GitHub Pages (ADR-0002), nên "phát hành" ở đây gồm hai

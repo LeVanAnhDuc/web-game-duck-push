@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 import { Loader2 } from "lucide-react";
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import type { ButtonHTMLAttributes, ReactNode, Ref } from "react";
 
 /**
  * Nút chuẩn của game. Luôn là `<button>` thật — không có `onClick` trên `div` ở
@@ -20,6 +20,8 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /** Đang chờ: nút tự khoá và hiện vòng quay, chữ giữ nguyên để nút không nhảy. */
   readonly pending?: boolean;
   readonly children?: ReactNode;
+  /** React 19: ref là prop thường, đi thẳng xuống `<button>` qua `...rest`. */
+  readonly ref?: Ref<HTMLButtonElement>;
 }
 
 const VARIANT_CLASS: Readonly<Record<ButtonVariant, string>> = {

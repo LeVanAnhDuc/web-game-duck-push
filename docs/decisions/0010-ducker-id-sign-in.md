@@ -42,4 +42,4 @@ nguồn của `redirect_uri`.
   từ tag gần nhất, nên mọi push sau đó lên `main` cũng bị bỏ qua cho tới khi có tag mới. Bản phát hành kế tiếp phải cắt
   tay một lần: `pnpm release:next` → `git tag vX.Y.Z && git push origin vX.Y.Z` →
   `gh release create vX.Y.Z --notes "$(pnpm -s release:notes)"`. Sau đó khoảng sạch và tự động hoá chạy lại.
-- Cổng e2e chuyển sang `:3420` vì `:3000` đang là Ducker ID khi chạy máy.
+- Cổng e2e chuyển sang `:3427 (cờ tắt) và :3428 (cờ bật)` vì `:3000` đang là Ducker ID khi chạy máy.

@@ -16,10 +16,10 @@ description: Use when you want to know how a real stranger experiences Duck Push
 - Dấu hiệu nhận biết đúng app: tiêu đề tab là **Duck Push**, nhưng tiêu đề trên trang là chữ
   **`SOKOBAN`** giãn chữ ở góc trái, cạnh nút đổi sáng/tối. Dưới đó là nút chính
   **`Màn ngẫu nhiên · Dễ`** và mục **`Chiến dịch`** với bốn tab `Dễ · Vừa · Khó · Rất khó`.
-  Thấy bất kỳ ô đăng nhập / đăng ký nào là **sai app** — sản phẩm này không có tài khoản.
+  Thấy ô đăng ký, hoặc form đăng nhập hỏi mật khẩu, là **sai app**. Duy nhất có thể xuất hiện là nút "Đăng nhập" Ducker ID (tuỳ chọn, chỉ có khi cờ tính năng bật; **tắt ở bản deploy**, ADR-0010) — nó chuyển sang trang Ducker ID chứ game không có form.
 - Email dùng-một-lần cho persona: **không cần**. Không có form nào trong game hỏi email.
   Persona nào bị hỏi email tức là đã đi lạc khỏi sản phẩm — ghi lại và dừng.
-- Tài khoản thử: **không có, và sẽ không bao giờ có** — "không tài khoản, không đăng nhập" là
+- Tài khoản thử: **không có tài khoản của game, và sẽ không có** — "không có tài khoản của game" là
   Non-Goal #1 (`docs/01-product/overview.md` §4). Mọi tiến độ nằm trong `localStorage`.
 
 ## Chạy

@@ -29,7 +29,7 @@ server, không có datastore, không có tài khoản** (xem Non-Goals). Các ng
 | --- | --- | --- |
 | NFR-SEC-01 | ~~Kiểm quyền mutation ở server~~ | **(bỏ)** — không có server. Không có gì để phân quyền: mọi dữ liệu là của chính máy đó |
 | NFR-SEC-02 | ~~Không log PII~~ | **(bỏ)** — không thu thập dữ liệu cá nhân nào |
-| NFR-SEC-03 | ~~Rate limit đăng nhập~~ | **(bỏ)** — không có đăng nhập |
+| NFR-SEC-03 | ~~Rate limit đăng nhập~~ | **(bỏ)** — game không có tài khoản riêng nên không có form đăng nhập để giới hạn; đăng nhập Ducker ID tuỳ chọn (ADR-0010) do Ducker ID chịu trách nhiệm |
 | NFR-SEC-04 | Secret chỉ đọc từ biến môi trường, không hardcode, không commit | grep + review |
 | NFR-SEC-05 | Dependency không có lỗ hổng mức high trở lên | job `dependency-review` trong CI |
 | NFR-SEC-06 | ~~Lỗi trả về không lộ stack trace~~ | **(bỏ)** — không có phản hồi từ server |

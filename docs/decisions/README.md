@@ -17,6 +17,7 @@
 | [ADR-0007](0007-adopt-the-shared-view-conventions.md) | Nhận bộ quy ước view dùng chung của workspace `web-game` | 2026-09-11 | accepted |
 | [ADR-0008](0008-random-level-id-prefix.md) | Mã màn ngẫu nhiên mang tiền tố `r`, và seed chuyển xuống dòng phụ | 2026-09-12 | accepted |
 | [ADR-0009](0009-click-a-neighbour-cell-to-step.md) | Bấm vào ô kề nhân vật để đi một bước, thay vì vẽ D-pad cho mọi thiết bị | 2026-09-12 | accepted |
+| [ADR-0010](0010-ducker-id-sign-in.md) | Đăng nhập Ducker ID tuỳ chọn, chỉ định danh, ship tối sau cờ tính năng | 2026-10-04 | accepted |
 <!-- END:auto -->
 
 Trạng thái: `accepted` · `superseded by ADR-00xx` · `deprecated`

@@ -25,8 +25,10 @@ Sokoban hoặc học được trong một màn. **Nhóm chính là người chơ
 
 ## 4. Non-Goals — dứt khoát không làm
 
-- **Không có tài khoản, không đăng nhập.** Mọi tiến độ nằm trong `localStorage` của máy đó.
-  Có tài khoản là có backend, có PII, có xoá dữ liệu — đổi hẳn bản chất dự án.
+- **Không có tài khoản của game.** Mọi tiến độ nằm trong `localStorage` của máy đó.
+  Có tài khoản là có backend, có PII, có xoá dữ liệu — đổi hẳn bản chất dự án. Ngoại lệ duy nhất:
+  đăng nhập Ducker ID **tuỳ chọn, chỉ định danh**, không backend, không đồng bộ, đang ship tối sau
+  cờ tính năng (ADR-0010).
 - **Không có bảng xếp hạng online.** Cùng lý do, cộng thêm việc chống gian lận một game
   chạy hoàn toàn phía client là bài toán không có lời giải sạch.
 - **Không có trình soạn màn.** Nguồn màn của sản phẩm này là generator; một editor sẽ tự

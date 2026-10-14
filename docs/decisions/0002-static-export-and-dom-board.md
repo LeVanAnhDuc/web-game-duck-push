@@ -4,6 +4,8 @@
 > **Trạng thái:** accepted
 > **Liên quan:** NFR-A11Y-02 · NFR-A11Y-05 · NFR-A11Y-07 · NFR-PERF-09 · FR-01
 
+> **Superseded in part:** biến `GITHUB_PAGES` đã được thay bằng `NEXT_PUBLIC_BASE_PATH` (ADR-0010). Phần còn lại của quyết định này vẫn đúng.
+
 ## 1. Bối cảnh
 
 Trần chi phí hạ tầng là **0 đồng/tháng** (`overview.md` §5), nên chỗ host duy nhất khả thi là

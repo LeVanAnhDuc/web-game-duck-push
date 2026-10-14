@@ -111,3 +111,22 @@ màn đổi sang dấu sao.
 - `localStorage` đầy hoặc bị chặn → ghi hỏng phải im lặng bỏ qua, không làm hỏng ván đang chơi.
 
 **Chức năng liên quan:** FR-09
+
+---
+
+## US-06 · Đăng nhập bằng Ducker ID (tuỳ chọn)
+
+**Bối cảnh:** Người chơi có tài khoản Ducker ID và muốn game nhận ra mình. Chỉ có khi cờ tính năng bật (ADR-0010).
+
+**Các bước:**
+1. Ở trang chủ bấm "Đăng nhập" (góc trên bên phải).
+2. Chuyển sang Ducker ID, đăng nhập (hoặc đã đăng nhập sẵn) rồi quay lại đúng màn cũ (kể cả `?level`, `?seed`, `?d`).
+3. Avatar + tên hiện ra; bấm vào mở menu: tên, email, "Mở hồ sơ Ducker ID", "Đăng xuất".
+
+**Kết quả mong đợi:** URL sạch (không còn `code`/`state`), game chơi và lưu y như cũ. Tải lại thì về chưa đăng nhập.
+
+**Điều gì có thể sai:**
+- Từ chối/huỷ ở Ducker ID, `state` bị sửa, hết hạn mạng → âm thầm về "Đăng nhập", không báo lỗi chặn game.
+- Mở game ở tab thứ hai khi tab đầu đang đăng nhập dở → `state_mismatch`, không đổi code.
+
+**Chức năng liên quan:** FR-17

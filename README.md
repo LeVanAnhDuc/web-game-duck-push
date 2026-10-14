@@ -7,7 +7,7 @@
 A Sokoban built with Next.js. No level in this game was drawn by hand: each one is
 assembled by a generator, then handed to a solver that has to find the optimal solution
 before the level is allowed to exist. That is also where the number on the HUD comes
-from — you always know how few pushes the level can be done in. No server, no sign-in:
+from — you always know how few pushes the level can be done in. No server, no game accounts:
 your records stay on your own device.
 
 **Play**: https://levananhduc.github.io/web-game-duck-push/
@@ -61,6 +61,11 @@ your records stay on your own device.
   - Your last twelve steps stay on the floor as fading dots
   - Sokoban is a game about the path you took, and undo is about the path you regret — seeing it makes "where did I go wrong" answerable without replaying the level in your head
 
+- **Optional Ducker ID sign-in** (behind a feature flag, off in the deployed build)
+
+  - A "Đăng nhập" button in the home header signs you in with Ducker ID (OIDC + PKCE) and shows your avatar and name; identity only, nothing is saved or synced
+  - You come back to the same level, and signing out or reloading returns to signed-out
+
 ## Controls
 
 | Action | Keys |
@@ -81,6 +86,9 @@ pnpm dev          # http://localhost:3000
 ```
 
 No environment variables are needed to run or develop — see [`.env.example`](.env.example).
+To try the Ducker ID sign-in locally, set `NEXT_PUBLIC_FEATURE_DUCKER_SIGN_IN=true` plus the four
+`NEXT_PUBLIC_DUCKER_*` values (issuer, client id, scope, profile path) in a gitignored `.env`;
+the deploy workflow deliberately passes none of them.
 
 ```bash
 pnpm test         # unit tests, including re-solving every committed level

@@ -1,6 +1,11 @@
 "use client";
 
+// Phải là import ĐẦU TIÊN: module này bắt ?code/?state của Ducker ID và khôi phục
+// ?level/?seed/?d trên thanh địa chỉ TRƯỚC khi useLevelRouter đọc chúng lúc khởi động.
+import "@/lib/duckerSession";
+import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
+import { settleCallbackUrl } from "@/lib/duckerAuth";
 import { Home } from "@/views/Home";
 import { Play } from "@/views/Play";
 import { useLevelRouter } from "@/hooks/useLevelRouter";
@@ -15,6 +20,9 @@ import { useLevelRouter } from "@/hooks/useLevelRouter";
  */
 export default function Page() {
   const router = useLevelRouter();
+  // Về từ Ducker ID với ?level=… thì app đi Loading → Play và Home (nơi có AccountButton /
+  // useDuckerAuth) có thể không bao giờ mount; nên đặt lại URL sạch ở đây. Một lần duy nhất.
+  useEffect(() => settleCallbackUrl(), []);
   const { screen } = router;
 
   if (screen.kind === "loading") {

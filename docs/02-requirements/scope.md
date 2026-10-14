@@ -22,6 +22,7 @@ Trạng thái: `chưa` · `đang làm` · `xong` · `(bỏ)`
 | FR-16 | Bấm vào ô kề nhân vật để đi một bước — lối điều khiển duy nhất hiện trên màn hình ở thiết bị có con trỏ chuột | US-01 | xong |
 | FR-11 | Seed của màn ngẫu nhiên nằm trong URL để mở lại và chia sẻ | US-03 | xong |
 | FR-12 | Giao diện sáng/tối theo hệ điều hành, tôn trọng `prefers-reduced-motion` | US-01 | xong |
+| FR-17 | Đăng nhập Ducker ID tuỳ chọn (OIDC + PKCE), chỉ định danh: nút, avatar + tên, menu tài khoản. Ship tối sau cờ `NEXT_PUBLIC_FEATURE_DUCKER_SIGN_IN` (ADR-0010) | US-06 | xong |
 | FR-13 | Gợi ý nước đi | — | (bỏ) — xem Non-Goals, để sau v1 |
 | FR-14 | Trình soạn màn | — | (bỏ) — xem Non-Goals |
 | FR-15 | Bảng xếp hạng online | — | (bỏ) — xem Non-Goals |

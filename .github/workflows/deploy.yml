@@ -46,10 +46,12 @@ jobs:
         env:
           # Unlike the sibling Vite games, which set `base: './'` and need no env
           # var, Next resolves basePath and assetPrefix at build time. GitHub Pages
-          # serves this repo under /web-game-duck-push, so the deploy build -- and
-          # only the deploy build -- has to be told. Setting it locally would break
+          # serves this repo under /<repo name>, so the deploy build -- and only the
+          # deploy build -- has to be told. Setting it locally would break
           # `pnpm dev`. See .env.example.
-          GITHUB_PAGES: "true"
+          NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
+          # Ducker ID sign-in is shipped dark: the flag and DUCKER_* vars are
+          # deliberately not passed (ADR-0010).
 
       # Next puts every asset under _next/, and anything starting with an
       # underscore is invisible to Jekyll.

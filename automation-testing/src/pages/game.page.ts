@@ -246,6 +246,16 @@ export class GamePage extends BasePage {
     await this.page.mouse.click(x, y);
   }
 
+  /** Writes one of the game's localStorage keys (the page must be on the site's origin), as a returning player has it. */
+  async writeStorage(key: string, value: unknown): Promise<void> {
+    await this.page.evaluate(([k, v]) => localStorage.setItem(k, typeof v === "string" ? v : JSON.stringify(v)), [key, value] as const);
+  }
+
+  async readStorage<T = unknown>(key: string): Promise<T | null> {
+    const raw = await this.page.evaluate((k) => localStorage.getItem(k), key);
+    return raw === null ? null : (JSON.parse(raw) as T);
+  }
+
   /** Square size in CSS px. */
   async cellSize(): Promise<number> {
     const box = await this.board().boundingBox();

@@ -299,6 +299,47 @@ export class GamePage extends BasePage {
     return this.page.evaluate(() => getComputedStyle(document.body).backgroundColor);
   }
 
+  /** Accessible names of every button on screen, in DOM order. */
+  async buttonNames(): Promise<string[]> {
+    const buttons = this.page.getByRole("button");
+    const names: string[] = [];
+    for (const button of await buttons.all()) {
+      const label = (await button.getAttribute("aria-label")) ?? (await button.innerText());
+      names.push(label.trim());
+    }
+    return names;
+  }
+
+  /** What has keyboard focus: its accessible label or text, and whether a focus ring is drawn on it. */
+  async focused(): Promise<{ name: string; ring: boolean }> {
+    return this.page.evaluate(() => {
+      const el = document.activeElement as HTMLElement | null;
+      if (!el || el === document.body) return { name: "", ring: false };
+      const style = getComputedStyle(el);
+      const ring = (style.outlineStyle !== "none" && parseFloat(style.outlineWidth) > 0) || style.boxShadow !== "none";
+      return { name: (el.getAttribute("aria-label") ?? el.innerText ?? "").trim(), ring };
+    });
+  }
+
+  /**
+   * How each piece is DRAWN, not coloured (NFR-A11Y-06): goals are round rings, a crate off a goal carries two diagonal
+   * braces, a crate on a goal carries one check stroke, the player is a circle plus shoulders. Read from the board's SVG.
+   */
+  async shapes(): Promise<{ rings: number; bracedCrates: number; checkedCrates: number; playerHasHead: boolean }> {
+    return this.board().evaluate((board) => {
+      const sprites = [...board.querySelectorAll<HTMLElement>(".cell-sprite")];
+      const crates = sprites.filter((s) => !s.querySelector("circle"));
+      const player = sprites.find((s) => s.querySelector("circle"));
+      const rings = [...board.querySelectorAll<HTMLElement>("div")].filter((d) => d.style.borderRadius === "9999px" && d.style.border !== "").length;
+      return {
+        rings,
+        bracedCrates: crates.filter((c) => c.querySelectorAll("path").length === 2).length,
+        checkedCrates: crates.filter((c) => c.querySelectorAll("path").length === 1).length,
+        playerHasHead: !!player,
+      };
+    });
+  }
+
   /** Square size in CSS px. */
   async cellSize(): Promise<number> {
     const box = await this.board().boundingBox();

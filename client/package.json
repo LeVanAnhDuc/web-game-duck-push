@@ -13,7 +13,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test",
+    "build:e2e": "node scripts/e2e-serve.mjs --build",
     "levels:generate": "tsx scripts/generate-pack.ts",
     "release:next": "pnpm dlx git-cliff@2.13.1 --workdir .. --bumped-version",
     "release:notes": "pnpm dlx git-cliff@2.13.1 --workdir .. --unreleased --tag $(pnpm dlx git-cliff@2.13.1 --workdir .. --bumped-version) --strip all"
@@ -26,7 +26,6 @@
     "react-dom": "19.2.8"
   },
   "devDependencies": {
-    "@playwright/test": "^1.62.1",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^22.15.0",
     "@types/react": "^19.0.0",
@@ -43,6 +42,9 @@
     "vitest": "^4.1.11"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["esbuild", "unrs-resolver"]
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "unrs-resolver"
+    ]
   }
 }

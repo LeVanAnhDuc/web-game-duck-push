@@ -95,10 +95,19 @@ the deploy workflow deliberately passes none of them.
 
 ```bash
 pnpm test         # unit tests, including re-solving every committed level
-pnpm test:e2e     # Playwright, against the real static build
 pnpm typecheck
 pnpm lint
 pnpm build        # static export into client/out/
+```
+
+The browser regression suite is its own package next to the app, in
+[`automation-testing/`](automation-testing/CLAUDE.md): every case traces to a requirement, and
+it builds and serves the real static export by itself.
+
+```bash
+cd automation-testing
+pnpm install && pnpm exec playwright install chromium
+pnpm test         # Playwright, against the real static build
 ```
 
 Regenerating the level packs (they are committed, so this is only needed when the

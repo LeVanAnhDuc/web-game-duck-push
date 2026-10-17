@@ -93,4 +93,4 @@ App nằm trong `client/`: các thư mục trong bảng tính từ `client/src/`
 | Sinh màn | Lai: phòng mẫu + đi lùi + solver có ngân sách | ADR-0003 |
 | Solver | A\* trên không gian đẩy, chuẩn hoá vùng người chơi | ADR-0004 |
 | Lưu trữ | `localStorage` có `version` | Không tài khoản, không backend — ADR-0005 |
-| Test | Vitest (unit) + Playwright (e2e) | Cùng bộ với `web-game-flappy-bird` |
+| Test | Vitest (unit, trong `client/`) + Playwright (e2e, gói `automation-testing/`) | Cùng bộ với `web-game-flappy-bird` |

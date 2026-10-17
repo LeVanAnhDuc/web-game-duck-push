@@ -1,9 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 
-import easyPack from "../src/game/levels/data/easy.json";
-import { parseXsb } from "../src/game/core/level";
-import { solve } from "../src/game/core/solver";
-import type { Direction } from "../src/game/core/types";
+import { pack, packLevel } from "@/data/levels";
+import { solve, type Direction } from "@/utils/sokoban";
 
 /**
  * E2E chạy trên bản build tĩnh thật, không phải bản dev.
@@ -21,17 +19,17 @@ const KEY_BY_DIRECTION: Readonly<Record<Direction, string>> = {
   right: "ArrowRight"
 };
 
-const firstLevel = easyPack.levels[0]!;
+const firstLevel = pack("easy")[0]!;
 
 function solutionForFirstLevel(): { solution: Direction[]; pushes: number } {
-  const state = parseXsb(firstLevel.xsb);
-  const result = solve(state, { maxNodes: 500_000, maxMillis: 30_000 });
-  if (result.status !== "solved") throw new Error(`Không giải được ${firstLevel.id}`);
-  return { solution: [...result.solution], pushes: result.pushes };
+  const { level, start } = packLevel(firstLevel.id);
+  const result = solve(level, start);
+  if (!result) throw new Error(`Không giải được ${firstLevel.id}`);
+  return { solution: result.moves, pushes: result.pushes };
 }
 
 async function openFirstLevel(page: Page) {
-  await page.goto(`/?level=${firstLevel.id}&d=easy`);
+  await page.goto(`./?level=${firstLevel.id}&d=easy`);
   await expect(page.getByTestId("board")).toBeVisible();
 }
 
@@ -62,7 +60,7 @@ test.describe("chơi một màn chiến dịch", () => {
     await play(page, solution);
     await expect(page.getByTestId("win-stats")).toBeVisible();
 
-    await page.goto("/");
+    await page.goto("./");
     const tile = page.getByRole("button", { name: /^Màn 1, đã giải/ });
     await expect(tile).toBeVisible();
     await expect(tile).toContainText(`${pushes} đẩy`);
@@ -107,7 +105,7 @@ test.describe("chơi một màn chiến dịch", () => {
 
 test.describe("trang chủ", () => {
   test("sinh một màn ngẫu nhiên mà không đóng băng trang", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("./");
     const button = page.getByTestId("random-level");
     await expect(button).toBeVisible();
 
@@ -123,7 +121,7 @@ test.describe("trang chủ", () => {
   });
 
   test("đường dẫn có seed hỏng thì quay về trang chủ với lời nhắn đọc được", async ({ page }) => {
-    await page.goto("/?seed=khong-phai-so&d=easy");
+    await page.goto("./?seed=khong-phai-so&d=easy");
     // Next tự chèn một `role="alert"` rỗng làm route announcer, nên phải lọc theo
     // nội dung thay vì lấy vai trò — không thì selector khớp hai phần tử.
     const message = page.getByRole("alert").filter({ hasText: /seed/i });

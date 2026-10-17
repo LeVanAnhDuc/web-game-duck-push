@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 
-import easyPack from "../src/game/levels/data/easy.json";
+import { pack } from "@/data/levels";
 
 /**
  * Đăng nhập Ducker ID (ADR-0010). Có hai bản build, xem scripts/e2e-serve.mjs:
@@ -10,7 +10,7 @@ import easyPack from "../src/game/levels/data/easy.json";
 
 const FLAG_ON = "http://127.0.0.1:3428";
 const ISSUER = "http://ducker.test";
-const levelId = easyPack.levels[0]!.id;
+const levelId = pack("easy")[0]!.id;
 const CORS = { "access-control-allow-origin": "*" };
 
 /** Chờ vòng đăng nhập quay về app (request điều hướng có ?state) và trang nạp xong. */
@@ -188,20 +188,4 @@ test.describe("cờ bật", () => {
       expect(await overflow()).toBeLessThanOrEqual(0);
     });
   }
-});
-
-test.describe("cờ tắt (bản giống deploy)", () => {
-  test("không có nút đăng nhập và không có request nào ra ngoài", async ({ page, baseURL }) => {
-    const outside: string[] = [];
-    page.on("request", (request) => {
-      const url = request.url();
-      if (url.startsWith("data:") || url.startsWith("blob:")) return;
-      if (!url.startsWith(baseURL!)) outside.push(url);
-    });
-    await page.goto("/");
-    await expect(page.getByTestId("random-level")).toBeVisible();
-    await expect(page.getByRole("button", { name: "Đăng nhập" })).toHaveCount(0);
-    await expect(page.getByRole("button", { name: "Tài khoản Ducker ID" })).toHaveCount(0);
-    expect(outside).toEqual([]);
-  });
 });

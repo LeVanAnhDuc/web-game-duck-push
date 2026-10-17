@@ -264,6 +264,31 @@ export class GamePage extends BasePage {
     return raw === null ? null : (JSON.parse(raw) as T);
   }
 
+  /**
+   * A real finger drag through CDP (touchStart → touchMove → touchEnd), starting at the board's centre and moving by
+   * (dx, dy) CSS px. The game reads touch events, so a synthetic pointer drag would not count.
+   */
+  async swipe(dx: number, dy: number): Promise<void> {
+    const box = await this.board().boundingBox();
+    if (!box) throw new Error("board not on screen");
+    const x = box.x + box.width / 2;
+    const y = box.y + box.height / 2;
+    const cdp = await this.page.context().newCDPSession(this.page);
+    const point = (px: number, py: number) => [{ x: px, y: py, id: 1 }];
+    await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: point(x, y) });
+    for (let i = 1; i <= 4; i += 1) {
+      await cdp.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: point(x + (dx * i) / 4, y + (dy * i) / 4) });
+    }
+    await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+    await cdp.detach();
+  }
+
+  /** A finger tap on a square (touch devices). */
+  async tapSquare(square: Square): Promise<void> {
+    const { x, y } = await this.squareCentre(square);
+    await this.page.touchscreen.tap(x, y);
+  }
+
   /** Square size in CSS px. */
   async cellSize(): Promise<number> {
     const box = await this.board().boundingBox();

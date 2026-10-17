@@ -126,7 +126,7 @@ chứ không phải "bế tắc" — `glossary.md`), và "làm lại" — từ m
 *lùi một nước* lẫn *chơi lại từ đầu*. **Sự lẫn lộn này phải được thử**, vì hàng nút dưới bàn
 cờ có ba nút cạnh nhau: `Hoàn tác` · `Làm lại` · `Chơi lại`, trong đó "Làm lại" nghĩa là
 *redo* — đúng ngược với cái phần lớn người chơi nghĩ khi đọc hai chữ đó
-(`src/views/Play/components/Controls/index.tsx`).
+(`client/src/views/Play/components/Controls/index.tsx`).
 
 **Không có gì để đăng nhập, nên không có gì để tin hay không tin.** Lăng kính "trust &
 desirability" ở `lib/frameworks.md` viết cho app có thu thập dữ liệu. Với sản phẩm này nó

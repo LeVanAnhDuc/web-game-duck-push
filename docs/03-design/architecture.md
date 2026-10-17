@@ -56,6 +56,8 @@ build, trong Worker lúc chơi, và trong Vitest lúc test — không có bản 
 
 Mũi tên chỉ đi một chiều: `views → hooks → session/storage → core`. Không có chiều ngược.
 
+App nằm trong `client/`: các thư mục trong bảng tính từ `client/src/` (riêng `scripts/` là `client/scripts/`).
+
 ## 4. Luồng dữ liệu của đường đi quan trọng nhất
 
 **Một nước đi** — đường này chạy vài trăm lần mỗi ván nên nó quyết định mọi thứ khác:

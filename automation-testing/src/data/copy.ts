@@ -13,6 +13,8 @@ export const copy = {
     // views/Home/mains/CampaignGrid/index.tsx → Legend
     legendSolved: "đã giải",
     legendOptimal: "đạt đúng số đẩy tối ưu",
+    packFailed: "Chưa tải được danh sách màn",
+    retry: "Thử lại",
     // views/Home/mains/ResumeCard/index.tsx
     resumeHeading: "Đang chơi dở",
     resumeAction: "Chơi tiếp",

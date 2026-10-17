@@ -102,8 +102,16 @@ export class GamePage extends BasePage {
     return this.page.getByRole("button", { name: new RegExp(`^Màn ${n}, `) });
   }
 
-  legend(): Locator {
-    return this.page.getByText(copy.home.legendOptimal).locator("..").locator("..");
+  /**
+   * The mark drawn on a level tile: a check (solved) or a star (optimal). They are aria-hidden icons, so the only handle
+   * is the icon's own class (lucide-react); the tile's accessible name carries the same fact in words.
+   */
+  tileMark(n: number, mark: "check" | "star"): Locator {
+    return this.levelTile(n).locator(`svg.lucide-${mark}`);
+  }
+
+  legendItem(text: string): Locator {
+    return this.page.getByText(text, { exact: true });
   }
 
   resumeSection(): Locator {

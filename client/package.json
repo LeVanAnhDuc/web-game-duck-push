@@ -21,7 +21,7 @@
   "dependencies": {
     "clsx": "^2.1.1",
     "lucide-react": "^0.475.0",
-    "next": "16.3.4",
+    "next": "16.3.8",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
@@ -31,7 +31,7 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "eslint": "^9.0.0",
-    "eslint-config-next": "16.3.4",
+    "eslint-config-next": "16.3.8",
     "happy-dom": "^20.13.2",
     "postcss": "^8.4.47",
     "prettier": "^3.3.3",
@@ -42,6 +42,13 @@
     "vitest": "^4.1.11"
   },
   "pnpm": {
+    "overrides": {
+      "brace-expansion@<1.1.20": "^1.1.20",
+      "brace-expansion@>=4.0.0 <5.0.11": "^5.0.11",
+      "compression@<1.8.2": "^1.8.2",
+      "sharp@<0.35.5": "^0.35.5",
+      "source-map-js@<1.2.2": "^1.2.2"
+    },
     "onlyBuiltDependencies": [
       "esbuild",
       "unrs-resolver"

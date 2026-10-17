@@ -289,6 +289,16 @@ export class GamePage extends BasePage {
     await this.page.touchscreen.tap(x, y);
   }
 
+  /** The moving pieces of the board (player and crates): the only elements that animate on a step. */
+  sprites(): Locator {
+    return this.board().locator(".cell-sprite");
+  }
+
+  /** The page background as rendered, e.g. "rgb(250, 248, 243)". */
+  async background(): Promise<string> {
+    return this.page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  }
+
   /** Square size in CSS px. */
   async cellSize(): Promise<number> {
     const box = await this.board().boundingBox();

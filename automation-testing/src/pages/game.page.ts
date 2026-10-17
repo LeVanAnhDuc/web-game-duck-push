@@ -300,6 +300,31 @@ export class GamePage extends BasePage {
     await this.page.touchscreen.tap(x, y);
   }
 
+  /**
+   * The fading trail drawn on the floor, oldest dot first, as squares plus each dot's opacity
+   * (../client/src/views/Play/components/TrailDots). The dots are aria-hidden and carry no test id, so they are told
+   * apart from goal rings by their fill (`--color-accent`) and placed by the board's own translate3d, which is
+   * column × cell, row × cell.
+   */
+  async trail(): Promise<{ square: Square; opacity: number }[]> {
+    const { width } = await this.reading();
+    return this.board().evaluate((board, columns) => {
+      const cell = board.clientWidth / columns;
+      const out: { square: { column: number; row: number }; opacity: number }[] = [];
+      for (const wrapper of Array.from(board.children) as HTMLElement[]) {
+        const dot = wrapper.firstElementChild as HTMLElement | null;
+        if (!dot || !dot.style.background.includes("--color-accent")) continue;
+        const m = /translate3d\(([-\d.]+)px, ([-\d.]+)px/.exec(wrapper.style.transform);
+        if (!m) continue;
+        out.push({
+          square: { column: Math.round(Number(m[1]) / cell) + 1, row: Math.round(Number(m[2]) / cell) + 1 },
+          opacity: Number(dot.style.opacity),
+        });
+      }
+      return out;
+    }, width);
+  }
+
   /** The moving pieces of the board (player and crates): the only elements that animate on a step. */
   sprites(): Locator {
     return this.board().locator(".cell-sprite");

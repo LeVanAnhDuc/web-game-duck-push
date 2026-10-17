@@ -4,16 +4,19 @@
 .env.*
 !.env.example
 
-# Node / Next
+# Toolchain — the app lives in client/, the regression suite in automation-testing/
 node_modules/
 .next/
-out/
-next-env.d.ts
+/client/out/
+/client/next-env.d.ts
 *.tsbuildinfo
 
-# Test
+# Playwright (automation-testing/ and any local MCP session)
 test-results/
 playwright-report/
+blob-report/
+playwright/.cache/
+.auth/
 .playwright-mcp/
 
 # Worktree cua feature — dat trong repo theo quy uoc workspace
@@ -27,5 +30,5 @@ playwright-report/
 !/.claude/scripts/
 !/.claude/agents/
 
-# e2e: hai bản build tĩnh (cờ tắt / cờ bật)
-.e2e/
+# e2e: hai bản build tĩnh (cờ tắt / cờ bật) mà automation-testing/ phục vụ
+/client/.e2e/

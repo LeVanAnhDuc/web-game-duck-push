@@ -80,22 +80,34 @@ whether a level can be done better.
 
 ## Commands
 
+The game app lives in `client/`; every app command runs from there.
+
 ```bash
+cd client
 pnpm install
 pnpm dev          # http://localhost:3000
 ```
 
-No environment variables are needed to run or develop — see [`.env.example`](.env.example).
+No environment variables are needed to run or develop — see [`client/.env.example`](client/.env.example).
 To try the Ducker ID sign-in locally, set `NEXT_PUBLIC_FEATURE_DUCKER_SIGN_IN=true` plus the four
 `NEXT_PUBLIC_DUCKER_*` values (issuer, client id, scope, profile path) in a gitignored `.env`;
 the deploy workflow deliberately passes none of them.
 
 ```bash
 pnpm test         # unit tests, including re-solving every committed level
-pnpm test:e2e     # Playwright, against the real static build
 pnpm typecheck
 pnpm lint
-pnpm build        # static export into out/
+pnpm build        # static export into client/out/
+```
+
+The browser regression suite is its own package next to the app, in
+[`automation-testing/`](automation-testing/CLAUDE.md): every case traces to a requirement, and
+it builds and serves the real static export by itself.
+
+```bash
+cd automation-testing
+pnpm install && pnpm exec playwright install chromium
+pnpm test         # Playwright, against the real static build
 ```
 
 Regenerating the level packs (they are committed, so this is only needed when the
@@ -110,6 +122,8 @@ The generator is deterministic: the same root seed produces the same pack, which
 the committed JSON can be verified rather than trusted.
 
 ## How it is put together
+
+The app is in `client/`; `docs/` holds the documentation.
 
 ```
 src/game/core/     the rules, the deadlock detector, the solver, the generator.

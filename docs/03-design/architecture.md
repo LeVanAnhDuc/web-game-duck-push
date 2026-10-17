@@ -56,6 +56,8 @@ build, trong Worker lúc chơi, và trong Vitest lúc test — không có bản 
 
 Mũi tên chỉ đi một chiều: `views → hooks → session/storage → core`. Không có chiều ngược.
 
+App nằm trong `client/`: các thư mục trong bảng tính từ `client/src/` (riêng `scripts/` là `client/scripts/`).
+
 ## 4. Luồng dữ liệu của đường đi quan trọng nhất
 
 **Một nước đi** — đường này chạy vài trăm lần mỗi ván nên nó quyết định mọi thứ khác:
@@ -91,4 +93,4 @@ Mũi tên chỉ đi một chiều: `views → hooks → session/storage → core
 | Sinh màn | Lai: phòng mẫu + đi lùi + solver có ngân sách | ADR-0003 |
 | Solver | A\* trên không gian đẩy, chuẩn hoá vùng người chơi | ADR-0004 |
 | Lưu trữ | `localStorage` có `version` | Không tài khoản, không backend — ADR-0005 |
-| Test | Vitest (unit) + Playwright (e2e) | Cùng bộ với `web-game-flappy-bird` |
+| Test | Vitest (unit, trong `client/`) + Playwright (e2e, gói `automation-testing/`) | Cùng bộ với `web-game-flappy-bird` |

@@ -50,7 +50,7 @@ coi một chuỗi nước đi liên tiếp không suy nghĩ là **một** hành 
 - **status:** live
 - **derived_from:** `docs/01-product/journeys.md:8` (US-01) ·
   `docs/01-product/overview.md` §6.1 · `docs/02-requirements/scope.md:12,14,15,17,18,21`
-  (FR-01, FR-03, FR-04, FR-06, FR-07, FR-10) · `src/game/levels/data/easy.json` (easy-01:
+  (FR-01, FR-03, FR-04, FR-06, FR-07, FR-10) · `client/src/game/levels/data/easy.json` (easy-01:
   `optimalPushes: 7`, `optimalMoves: 30`)
 
 ---
@@ -73,7 +73,7 @@ coi một chuỗi nước đi liên tiếp không suy nghĩ là **một** hành 
 - **status:** live
 - **derived_from:** `docs/01-product/journeys.md:31` (US-02) ·
   `docs/02-requirements/scope.md:13,16` (FR-02, FR-05) ·
-  `src/views/Play/components/DeadlockBanner/index.tsx:28`
+  `client/src/views/Play/components/DeadlockBanner/index.tsx:28`
 
 ---
 
@@ -95,7 +95,7 @@ coi một chuỗi nước đi liên tiếp không suy nghĩ là **một** hành 
 - **derived_from:** `docs/01-product/journeys.md:54` (US-03) ·
   `docs/02-requirements/scope.md:19,23` (FR-08, FR-11) ·
   `docs/02-requirements/nfr.md` NFR-PERF-06, NFR-PERF-08, NFR-REL-03 ·
-  `src/views/Home/components/RandomLevelButton/index.tsx:64`
+  `client/src/views/Home/components/RandomLevelButton/index.tsx:64`
 
 ---
 
@@ -118,7 +118,7 @@ coi một chuỗi nước đi liên tiếp không suy nghĩ là **một** hành 
 - **derived_from:** `docs/01-product/journeys.md:77` (US-04) ·
   `docs/02-requirements/scope.md:18,20` (FR-07, FR-09) ·
   `docs/02-requirements/nfr.md` NFR-A11Y-06 ·
-  `src/views/Home/components/LevelTile/index.tsx:12,34`
+  `client/src/views/Home/components/LevelTile/index.tsx:12,34`
 
 ---
 
@@ -143,7 +143,7 @@ coi một chuỗi nước đi liên tiếp không suy nghĩ là **một** hành 
 - **derived_from:** `docs/01-product/journeys.md:97` (US-05) ·
   `docs/02-requirements/scope.md:20` (FR-09) ·
   `docs/02-requirements/nfr.md` NFR-REL-04, NFR-DATA-04 ·
-  `src/views/Home/mains/ResumeCard/index.tsx:28`
+  `client/src/views/Home/mains/ResumeCard/index.tsx:28`
 
 ---
 
@@ -167,7 +167,7 @@ coi một chuỗi nước đi liên tiếp không suy nghĩ là **một** hành 
 - **derived_from:** `docs/01-product/journeys.md:54` (US-03, bước 4) ·
   `docs/02-requirements/scope.md:23` (FR-11) ·
   `docs/02-requirements/nfr.md` NFR-SEC-07 ·
-  `src/hooks/levelRouting.ts` (`parseBootTarget`)
+  `client/src/hooks/levelRouting.ts` (`parseBootTarget`)
 
 ---
 

@@ -53,10 +53,12 @@ function squares(label: string, prefix: string): Square[] {
  */
 export class GamePage extends BasePage {
   readonly win: WinDialog;
+  readonly account: AccountMenu;
 
   constructor(page: Page) {
     super(page);
     this.win = new WinDialog(page);
+    this.account = new AccountMenu(page);
   }
 
   // ---------- navigation ----------
@@ -80,6 +82,15 @@ export class GamePage extends BasePage {
 
   title(): Locator {
     return this.page.getByRole("heading", { name: copy.home.title, level: 1 });
+  }
+
+  /** The home header row: wordmark, (account), theme toggle. */
+  header(): Locator {
+    return this.page.getByRole("main").locator("header").first();
+  }
+
+  async pageOverflowX(): Promise<number> {
+    return this.page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   }
 
   themeToggle(): Locator {
@@ -370,5 +381,39 @@ export class WinDialog {
 
   random(): Locator {
     return this.dialog().getByRole("button", { name: copy.win.random });
+  }
+}
+
+/** Ducker ID sign-in button + account menu (only rendered when the feature flag is on - ADR-0010). */
+export class AccountMenu {
+  constructor(readonly page: Page) {}
+
+  signInButton(): Locator {
+    // exact: the in-flight label "Đang đăng nhập…" contains the words too
+    return this.page.getByRole("button", { name: copy.ducker.signIn, exact: true });
+  }
+
+  trigger(): Locator {
+    return this.page.getByRole("button", { name: copy.ducker.menu });
+  }
+
+  menu(): Locator {
+    return this.page.getByRole("menu", { name: copy.ducker.menu });
+  }
+
+  profileLink(): Locator {
+    return this.page.getByRole("menuitem", { name: copy.ducker.openProfile });
+  }
+
+  signOutItem(): Locator {
+    return this.page.getByRole("menuitem", { name: copy.ducker.signOut });
+  }
+
+  /** Clicks "Đăng nhập" and waits for the round trip: away to the issuer's authorize URL and back, page loaded. */
+  async signInRoundTrip(issuer: string): Promise<void> {
+    const bounced = this.page.waitForResponse((r) => r.url().startsWith(`${issuer}/oauth/authorize`));
+    await this.signInButton().click();
+    await bounced;
+    await this.page.waitForLoadState("load");
   }
 }

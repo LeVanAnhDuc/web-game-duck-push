@@ -58,6 +58,22 @@ export function cellOf(level: Level, index: number): Cell {
   return { column: index % level.width, row: Math.floor(index / level.width) };
 }
 
+/** The square as the board's aria-label names it: column and row counted from 1. */
+export function squareOf(level: Level, index: number): Cell {
+  return { column: (index % level.width) + 1, row: Math.floor(index / level.width) + 1 };
+}
+
+/** A press that is refused because the crate in front would hit a wall (`"wall"`) or another crate (`"crate"`). */
+export function blockedPush(level: Level, start: State, by: "wall" | "crate"): Direction[] | null {
+  return findSequence(level, start, (before, direction, after) => {
+    if (after.moved) return false;
+    const next = before.player + offset(level, direction);
+    const beyond = next + offset(level, direction);
+    if (!before.boxes.includes(next)) return false;
+    return by === "wall" ? level.walls.has(beyond) : before.boxes.includes(beyond);
+  });
+}
+
 function offset(level: Level, direction: Direction): number {
   switch (direction) {
     case "up":

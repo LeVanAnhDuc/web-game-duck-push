@@ -8,3 +8,4 @@
 - **REQ-PLAY-06** Bấm vào ô kề nhân vật đi đúng một bước về phía đó (kể cả đẩy thùng); bấm ô không kề hoặc vào chính nhân vật không làm gì — không tự tìm đường (FR-16, ADR-0009).
 - **REQ-PLAY-07** Đồng hồ HUD chạy từ lúc mở màn, hiện `mm:ss` (FR-03, NFR-I18N-03).
 - **REQ-PLAY-08** Thùng nằm trên đích được mô tả khác thùng thường và được đếm vào số thùng đã xong (FR-01, NFR-A11Y-06/07).
+- **REQ-PLAY-09** Vệt đường đi: mỗi bước để lại một chấm mờ trên ô vừa rời, chấm mới đậm hơn chấm cũ; vệt giữ 12 ô gần nhất (11 chấm + ô đang đứng) và đi theo lịch sử — hoàn tác bỏ chấm mới nhất, chơi lại xoá hết (README "A trail of where you have been", glossary "Vệt đường đi", `docs/03-design/architecture.md` bước 4, MASTER.md "Signature element").

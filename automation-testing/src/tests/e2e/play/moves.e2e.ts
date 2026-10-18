@@ -84,7 +84,7 @@ test("bước vào tường thì không đi, không tính bước", { tag: ["@TC
   expect(await gamePage.counters()).toMatchObject({ moves: 0, pushes: 0 });
 });
 
-test("W A S D đi giống bốn phím mũi tên", { tag: ["@TC-PLAY-007"] }, async ({ gamePage, page }) => {
+test("WASD (W A S D) đi giống bốn phím mũi tên", { tag: ["@TC-PLAY-007"] }, async ({ gamePage, page }) => {
   await gamePage.gotoLevel(FIRST_LEVEL);
   for (const key of ["w", "a", "s", "d"]) await page.keyboard.press(key);
   const want = expected(["up", "left", "down", "right"]);

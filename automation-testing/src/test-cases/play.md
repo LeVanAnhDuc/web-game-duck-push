@@ -51,7 +51,7 @@ Lăng kính: 1 truy vết · 2 phân vùng · 3 biên · 4 chuyển trạng thá
 - **Mong đợi:** không đổi; `Bước 0 · Đẩy 0`
 - **Automated:** `tests/e2e/play/moves.e2e.ts`
 
-### TC-PLAY-007 — W A S D đi giống bốn phím mũi tên
+### TC-PLAY-007 — WASD (W A S D) đi giống bốn phím mũi tên
 
 - **Requirement:** REQ-PLAY-05
 - **Layer:** e2e · **Priority:** P1 · **Lăng kính:** 2
@@ -98,3 +98,27 @@ Lăng kính: 1 truy vết · 2 phân vùng · 3 biên · 4 chuyển trạng thá
 - **Bước:** đi theo lời giải tối ưu tới cú đẩy đầu tiên đưa thùng vào đích
 - **Mong đợi:** mô tả có một `Thùng đã vào đích`, một `Thùng`, và `1 trên 2 thùng đã vào đích`
 - **Automated:** `tests/e2e/play/moves.e2e.ts`
+
+### TC-PLAY-013 — mở màn chưa có vệt; mỗi bước để lại một chấm trên ô vừa rời, chấm mới đậm hơn chấm cũ
+
+- **Requirement:** REQ-PLAY-09
+- **Layer:** e2e · **Priority:** P1 · **Tags:** @smoke · **Lăng kính:** 1
+- **Bước:** mở màn 1 → đi 4 nước đầu của lời giải tối ưu
+- **Mong đợi:** lúc mở 0 chấm; sau 4 nước đúng 4 chấm, nằm trên 4 ô nhân vật vừa rời (theo mô hình của suite), độ mờ tăng dần từ chấm cũ tới chấm mới, không chấm nào quá 0.28
+- **Automated:** `tests/e2e/play/trail.e2e.ts`
+
+### TC-PLAY-014 — vệt chỉ giữ 12 ô gần nhất: sau hơn 12 bước còn đúng 11 chấm cộng ô đang đứng
+
+- **Requirement:** REQ-PLAY-09
+- **Layer:** e2e · **Priority:** P2 · **Lăng kính:** 3
+- **Bước:** mở màn 1 → đi lời giải tối ưu trừ nước cuối (hơn 12 bước, màn chưa thắng)
+- **Mong đợi:** đúng 11 chấm, là 11 ô vừa rời gần nhất; chấm cũ nhất vẫn còn hiện (độ mờ > 0)
+- **Automated:** `tests/e2e/play/trail.e2e.ts`
+
+### TC-PLAY-015 — hoàn tác xoá chấm mới nhất, chơi lại xoá cả vệt
+
+- **Requirement:** REQ-PLAY-09
+- **Layer:** e2e · **Priority:** P2 · **Lăng kính:** 4
+- **Bước:** mở màn 1 → đi 5 nước → `Z` → bấm `Chơi lại`
+- **Mong đợi:** sau `Z` vệt bằng đúng vệt của 4 nước đầu; sau `Chơi lại` không còn chấm nào
+- **Automated:** `tests/e2e/play/trail.e2e.ts`
